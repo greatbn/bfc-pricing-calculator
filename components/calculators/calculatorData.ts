@@ -85,11 +85,24 @@ export const cloudServerPricing = {
         nvme: { under100GB: 19.0, over100GB: 12.5 },
       }
     }
-  },
-  wanIP: {
-    subscription: 100000,
-    onDemand: 100000,
   }
+};
+
+export const wanIpPricing = {
+  subscription: 100000,
+  onDemand: 100000,
+};
+
+export const snapshotPricing = {
+  pricePerGB: 1500,
+};
+
+export const backupSchedulePricing = {
+  price: 50000,
+};
+
+export const customImagePricing = {
+  pricePerGB: 1000,
 };
 
 export const databasePricing = {

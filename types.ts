@@ -19,7 +19,11 @@ export type ServiceId =
   | 'CallCenter' 
   | 'BusinessEmail' 
   | 'EmailTransaction'
-  | 'LMS';
+  | 'LMS'
+  | 'WanIp'
+  | 'Snapshot'
+  | 'BackupSchedule'
+  | 'CustomImage';
 
 export interface Service {
   id: ServiceId;
