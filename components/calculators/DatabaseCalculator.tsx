@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import type { EstimateItem } from '../../types';
-import { databasePricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface DatabaseCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -12,6 +12,8 @@ type Tier = 'premium' | 'enterprise' | 'dedicated';
 
 const DatabaseCalculator: React.FC<DatabaseCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const databasePricing = pricing!.database;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [tier, setTier] = useState<Tier>('premium');
@@ -29,7 +31,7 @@ const DatabaseCalculator: React.FC<DatabaseCalculatorProps> = ({ onAddItem }) =>
     const currentRams = databasePricing.ram[tier];
     setCpuCores(currentCpus[0].cores);
     setRamGB(currentRams[0].gb);
-  }, [tier]);
+  }, [tier, databasePricing]);
 
   const { total, description, singlePrice } = useMemo(() => {
     let singleItemTotal = 0;
@@ -39,12 +41,12 @@ const DatabaseCalculator: React.FC<DatabaseCalculatorProps> = ({ onAddItem }) =>
     const backupSizeNum = parseInt(backupSize, 10) || 0;
     const quantityNum = parseInt(quantity, 10) || 1;
 
-    const selectedCpu = availableCpus.find(c => c.cores === cpuCores);
+    const selectedCpu = availableCpus.find((c: any) => c.cores === cpuCores);
     if (selectedCpu) {
       singleItemTotal += selectedCpu.price * hoursPerMonth;
     }
 
-    const selectedRam = availableRams.find(r => r.gb === ramGB);
+    const selectedRam = availableRams.find((r: any) => r.gb === ramGB);
     if (selectedRam) {
       singleItemTotal += selectedRam.price * hoursPerMonth;
     }
@@ -77,7 +79,7 @@ const DatabaseCalculator: React.FC<DatabaseCalculatorProps> = ({ onAddItem }) =>
       description: t(descKey, descOptions),
       singlePrice: finalSinglePrice
     };
-  }, [tier, cpuCores, ramGB, diskSize, backupSize, quantity, availableCpus, availableRams, t]);
+  }, [tier, cpuCores, ramGB, diskSize, backupSize, quantity, availableCpus, availableRams, t, databasePricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -127,14 +129,14 @@ const DatabaseCalculator: React.FC<DatabaseCalculatorProps> = ({ onAddItem }) =>
           <div>
             <label htmlFor="cpu" className="block text-sm font-medium text-gray-700">{t('database.cpu_cores')}</label>
             <select id="cpu" value={cpuCores} onChange={e => setCpuCores(Number(e.target.value))} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-              {availableCpus.map(c => <option key={c.cores} value={c.cores}>{c.cores} vCPU</option>)}
+              {availableCpus.map((c: any) => <option key={c.cores} value={c.cores}>{c.cores} vCPU</option>)}
             </select>
           </div>
 
           <div>
             <label htmlFor="ram" className="block text-sm font-medium text-gray-700">{t('database.ram_gb')}</label>
             <select id="ram" value={ramGB} onChange={e => setRamGB(Number(e.target.value))} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-              {availableRams.map(r => <option key={r.gb} value={r.gb}>{r.gb} GB</option>)}
+              {availableRams.map((r: any) => <option key={r.gb} value={r.gb}>{r.gb} GB</option>)}
             </select>
           </div>
         

@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { EstimateItem } from '../../types';
-import { lmsPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface LMSCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,6 +10,8 @@ interface LMSCalculatorProps {
 
 const LMSCalculator: React.FC<LMSCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const lmsPricing = pricing!.lms;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [selectedPackageName, setSelectedPackageName] = useState(lmsPricing.packages[0].name);
@@ -17,7 +19,7 @@ const LMSCalculator: React.FC<LMSCalculatorProps> = ({ onAddItem }) => {
   const [quantity, setQuantity] = useState('1');
 
   const { total, description, singlePrice } = useMemo(() => {
-    const selectedPackage = lmsPricing.packages.find(p => p.name === selectedPackageName);
+    const selectedPackage = lmsPricing.packages.find((p: any) => p.name === selectedPackageName);
     if (!selectedPackage) return { total: 0, description: '', singlePrice: 0 };
 
     let singleItemTotal = selectedPackage.price;
@@ -44,7 +46,7 @@ const LMSCalculator: React.FC<LMSCalculatorProps> = ({ onAddItem }) => {
       description: t(descKey, descOptions),
       singlePrice: singleItemTotal
     };
-  }, [selectedPackageName, additionalStorageGB, quantity, t]);
+  }, [selectedPackageName, additionalStorageGB, quantity, t, lmsPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -91,7 +93,7 @@ const LMSCalculator: React.FC<LMSCalculatorProps> = ({ onAddItem }) => {
               onChange={(e) => setSelectedPackageName(e.target.value)}
               className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-black border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
-              {lmsPricing.packages.map(p => (
+              {lmsPricing.packages.map((p: any) => (
                 <option key={p.name} value={p.name}>
                   {t('lms.package_option', { name: p.name, ccu: p.ccu, price: p.price.toLocaleString(numberLocale) })}
                 </option>

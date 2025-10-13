@@ -16,8 +16,12 @@ import WanIpCalculator from './components/calculators/WanIpCalculator';
 import SnapshotCalculator from './components/calculators/SnapshotCalculator';
 import BackupScheduleCalculator from './components/calculators/BackupScheduleCalculator';
 import CustomImageCalculator from './components/calculators/CustomImageCalculator';
+import AiEstimatePage from './components/AiEstimatePage';
 import type { EstimateItem, Service, ServiceId } from './types';
 import { useLanguage } from './i18n/LanguageContext';
+import { usePricing } from './contexts/PricingContext';
+
+export type Page = 'calculator' | 'aiEstimate';
 
 // Icons for the service selector
 const serviceIcons: Record<ServiceId, React.ReactNode> = {
@@ -36,6 +40,7 @@ const serviceIcons: Record<ServiceId, React.ReactNode> = {
   Snapshot: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
   BackupSchedule: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 11v4" /></svg>,
   CustomImage: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
+  AI: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.636-6.364l-.707-.707M19 19l-1.414-1.414M12 21v-1m-6.364-1.636l.707-.707" /></svg>,
 };
 const serviceIds: ServiceId[] = [
     'CloudServer', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
@@ -43,6 +48,8 @@ const serviceIds: ServiceId[] = [
 
 const App: React.FC = () => {
   const { t } = useLanguage();
+  const { pricing, isLoading } = usePricing();
+  const [currentPage, setCurrentPage] = useState<Page>('calculator');
   const [activeService, setActiveService] = useState<ServiceId>('CloudServer');
   const [estimateItems, setEstimateItems] = useState<EstimateItem[]>([]);
   const [billingCycle, setBillingCycle] = useState<number>(1);
@@ -63,6 +70,14 @@ const App: React.FC = () => {
   const handleAddItem = useCallback((item: EstimateItem) => {
     setEstimateItems(prevItems => [...prevItems, item]);
   }, []);
+  
+  const addMultipleItems = useCallback((items: Omit<EstimateItem, 'id'>[]) => {
+    const newItems = items.map(item => ({
+      ...item,
+      id: `ai-${Date.now()}-${Math.random()}`
+    }));
+    setEstimateItems(prevItems => [...prevItems, ...newItems]);
+  }, []);
 
   const handleRemoveItem = useCallback((id: string) => {
     setEstimateItems(prevItems => prevItems.filter(item => item.id !== id));
@@ -73,6 +88,7 @@ const App: React.FC = () => {
   }, []);
 
   const activeCalculator = useMemo(() => {
+    if (!pricing) return null;
     switch (activeService) {
       case 'CloudServer': return <CloudServerCalculator onAddItem={handleAddItem} />;
       case 'Database': return <DatabaseCalculator onAddItem={handleAddItem} />;
@@ -91,50 +107,73 @@ const App: React.FC = () => {
       case 'CustomImage': return <CustomImageCalculator onAddItem={handleAddItem} />;
       default: return null;
     }
-  }, [activeService, handleAddItem]);
+  }, [activeService, handleAddItem, pricing]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!pricing) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
+        <div className="text-center">
+            <h2 className="text-xl font-semibold text-red-600">Error</h2>
+            <p className="text-gray-700 mt-2">Failed to load critical pricing data. Please check your network connection and refresh the page.</p>
+        </div>
+      </div>
+    );
+  }
 
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans">
-      <Header />
+      <Header onNavigate={setCurrentPage} currentPage={currentPage}/>
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          <div className="w-full lg:w-2/3 xl:w-3/4 space-y-8">
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">{t('services.select_service')}</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-                    {services.map(service => (
-                        <button
-                            key={service.id}
-                            onClick={() => setActiveService(service.id)}
-                            className={`p-4 rounded-lg text-center transition-all duration-200 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 ${
-                                activeService === service.id 
-                                ? 'bg-blue-700 text-white shadow-md' 
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                            <div className={`transition-colors duration-200 ${activeService === service.id ? 'text-white' : 'text-blue-700'}`}>
-                                {service.icon}
-                            </div>
-                            <span className="text-sm font-semibold block">{service.name}</span>
-                        </button>
-                    ))}
-                </div>
+        {currentPage === 'calculator' ? (
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <div className="w-full lg:w-2/3 xl:w-3/4 space-y-8">
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">{t('services.select_service')}</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                      {services.map(service => (
+                          <button
+                              key={service.id}
+                              onClick={() => setActiveService(service.id)}
+                              className={`p-4 rounded-lg text-center transition-all duration-200 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 ${
+                                  activeService === service.id 
+                                  ? 'bg-blue-700 text-white shadow-md' 
+                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              }`}
+                          >
+                              <div className={`transition-colors duration-200 ${activeService === service.id ? 'text-white' : 'text-blue-700'}`}>
+                                  {service.icon}
+                              </div>
+                              <span className="text-sm font-semibold block">{service.name}</span>
+                          </button>
+                      ))}
+                  </div>
+              </div>
+              
+              {activeCalculator}
             </div>
             
-            {activeCalculator}
+            <CostSummary
+              items={estimateItems}
+              onRemoveItem={handleRemoveItem}
+              onClearAll={handleClearAll}
+              billingCycle={billingCycle}
+              onBillingCycleChange={setBillingCycle}
+              discount={discount}
+              onDiscountChange={setDiscount}
+            />
           </div>
-          
-          <CostSummary
-            items={estimateItems}
-            onRemoveItem={handleRemoveItem}
-            onClearAll={handleClearAll}
-            billingCycle={billingCycle}
-            onBillingCycleChange={setBillingCycle}
-            discount={discount}
-            onDiscountChange={setDiscount}
-          />
-        </div>
+        ) : (
+          <AiEstimatePage onAddItems={addMultipleItems} onNavigate={setCurrentPage} />
+        )}
       </main>
     </div>
   );

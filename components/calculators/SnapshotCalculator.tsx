@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { EstimateItem } from '../../types';
-import { snapshotPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface SnapshotCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,6 +10,8 @@ interface SnapshotCalculatorProps {
 
 const SnapshotCalculator: React.FC<SnapshotCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const snapshotPricing = pricing!.snapshot;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [size, setSize] = useState('50');
@@ -24,7 +26,7 @@ const SnapshotCalculator: React.FC<SnapshotCalculatorProps> = ({ onAddItem }) =>
       description: t('snapshot.desc', { size: sizeNum }),
       singlePrice: price
     };
-  }, [size, quantity, t]);
+  }, [size, quantity, t, snapshotPricing]);
 
   const handleAdd = () => {
     if (total > 0) {

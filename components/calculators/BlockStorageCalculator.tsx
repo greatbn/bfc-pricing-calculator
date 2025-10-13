@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { EstimateItem } from '../../types';
-import { cloudServerPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface BlockStorageCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -13,6 +13,8 @@ type DiskType = 'hdd' | 'ssd' | 'nvme';
 
 const BlockStorageCalculator: React.FC<BlockStorageCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const blockStoragePricing = pricing!.blockStorage;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [billingMethod, setBillingMethod] = useState<BillingMethod>('subscription');
@@ -24,7 +26,7 @@ const BlockStorageCalculator: React.FC<BlockStorageCalculatorProps> = ({ onAddIt
   const { total, description, singlePrice } = useMemo(() => {
     let singleItemTotal = 0;
     
-    const pricingSource = cloudServerPricing.amdGen4.disk; 
+    const pricingSource = blockStoragePricing; 
     const diskSizeNum = parseInt(diskSize, 10) || 10;
     const hoursNum = parseInt(hours, 10) || 1;
     const quantityNum = parseInt(quantity, 10) || 1;
@@ -61,7 +63,7 @@ const BlockStorageCalculator: React.FC<BlockStorageCalculatorProps> = ({ onAddIt
       description: t(descKey, descOptions),
       singlePrice: finalPrice
     };
-  }, [billingMethod, diskType, diskSize, hours, quantity, t]);
+  }, [billingMethod, diskType, diskSize, hours, quantity, t, blockStoragePricing]);
 
   const handleAdd = () => {
     if (total > 0) {

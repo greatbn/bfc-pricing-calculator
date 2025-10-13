@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { EstimateItem } from '../../types';
-import { customImagePricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface CustomImageCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,6 +10,8 @@ interface CustomImageCalculatorProps {
 
 const CustomImageCalculator: React.FC<CustomImageCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const customImagePricing = pricing!.customImage;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [size, setSize] = useState('20');
@@ -24,7 +26,7 @@ const CustomImageCalculator: React.FC<CustomImageCalculatorProps> = ({ onAddItem
       description: t('custom_image.desc', { size: sizeNum }),
       singlePrice: price
     };
-  }, [size, quantity, t]);
+  }, [size, quantity, t, customImagePricing]);
 
   const handleAdd = () => {
     if (total > 0) {

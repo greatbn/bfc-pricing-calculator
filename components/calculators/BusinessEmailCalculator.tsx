@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { EstimateItem } from '../../types';
-import { businessEmailPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface BusinessEmailCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,12 +10,14 @@ interface BusinessEmailCalculatorProps {
 
 const BusinessEmailCalculator: React.FC<BusinessEmailCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const businessEmailPricing = pricing!.businessEmail;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
   const [selectedPackageId, setSelectedPackageId] = useState(businessEmailPricing.packages[0].id);
   const [quantity, setQuantity] = useState('1');
 
   const { total, description, singlePrice } = useMemo(() => {
-    const selectedPackage = businessEmailPricing.packages.find(p => p.id === selectedPackageId);
+    const selectedPackage = businessEmailPricing.packages.find((p: any) => p.id === selectedPackageId);
     if (!selectedPackage) return { total: 0, description: '', singlePrice: 0 };
 
     const price = selectedPackage.price;
@@ -31,7 +33,7 @@ const BusinessEmailCalculator: React.FC<BusinessEmailCalculatorProps> = ({ onAdd
       description: desc,
       singlePrice: price
     };
-  }, [selectedPackageId, quantity, t, numberLocale]);
+  }, [selectedPackageId, quantity, t, numberLocale, businessEmailPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -78,7 +80,7 @@ const BusinessEmailCalculator: React.FC<BusinessEmailCalculatorProps> = ({ onAdd
               onChange={(e) => setSelectedPackageId(Number(e.target.value))}
               className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-black border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
-              {businessEmailPricing.packages.map(p => (
+              {businessEmailPricing.packages.map((p: any) => (
                 <option key={p.id} value={p.id}>
                   {t('business_email.package_option', {
                       storageGB: p.storageGB,

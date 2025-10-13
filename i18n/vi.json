@@ -1,6 +1,7 @@
 {
   "header": {
-    "title": "Công cụ tính chi phí Bizfly Cloud"
+    "title": "Công cụ tính chi phí Bizfly Cloud",
+    "ai_estimate_button": "Tạo dự toán bằng AI"
   },
   "services": {
     "select_service": "Chọn dịch vụ để ước tính",
@@ -18,7 +19,8 @@
     "WanIp": "WAN IP",
     "Snapshot": "Snapshot",
     "BackupSchedule": "Backup Schedule",
-    "CustomImage": "Custom Image"
+    "CustomImage": "Custom Image",
+    "AI": "Tạo bởi AI"
   },
   "summary": {
     "title": "Bảng dự toán chi phí",
@@ -45,6 +47,22 @@
     "per_month": "/tháng",
     "per_hours": "cho {hours} giờ",
     "quantity": "Số lượng"
+  },
+   "ai_estimate": {
+    "title": "Tạo dự toán bằng AI",
+    "description": "Tạo dự toán chi phí bằng cách tải lên hình ảnh (như hóa đơn hoặc sơ đồ kiến trúc) hoặc mô tả nhu cầu về hạ tầng của bạn trong ô văn bản bên dưới.",
+    "tab_upload": "Tải ảnh lên",
+    "tab_text": "Nhập văn bản",
+    "upload_label": "Nhấp để tải lên hoặc kéo và thả",
+    "upload_supported": "PNG, JPG, GIF tối đa 10MB",
+    "text_label": "Mô tả yêu cầu của bạn",
+    "text_placeholder": "VD: 'Tôi cần hai máy chủ đám mây premium với 4vCPU, 8GB RAM và 100GB SSD mỗi máy. Thêm một cơ sở dữ liệu được quản lý với 2vCPU và 4GB RAM.'",
+    "generate_button": "Tạo dự toán",
+    "generating_message": "Đang phân tích yêu cầu của bạn bằng AI...",
+    "error_title": "Đã có lỗi xảy ra",
+    "results_title": "Dự toán đã tạo",
+    "add_to_main_estimate": "Thêm vào bảng dự toán chính",
+    "no_results": "AI không thể xác định bất kỳ dịch vụ nào từ yêu cầu của bạn. Vui lòng thử lại với nhiều chi tiết hơn."
   },
   "cloud_server": {
     "title": "Công cụ tính Cloud Server",

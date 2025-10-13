@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { EstimateItem } from '../../types';
-import { loadBalancerPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface LoadBalancerCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,6 +10,8 @@ interface LoadBalancerCalculatorProps {
 
 const LoadBalancerCalculator: React.FC<LoadBalancerCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const loadBalancerPricing = pricing!.loadBalancer;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [selectedPackage, setSelectedPackage] = useState(loadBalancerPricing.packages[0].name);
@@ -21,7 +23,7 @@ const LoadBalancerCalculator: React.FC<LoadBalancerCalculatorProps> = ({ onAddIt
     const dataOverageNum = parseInt(dataOverage, 10) || 0;
     const quantityNum = parseInt(quantity, 10) || 1;
 
-    const pkg = loadBalancerPricing.packages.find(p => p.name === selectedPackage);
+    const pkg = loadBalancerPricing.packages.find((p: any) => p.name === selectedPackage);
     if (pkg) {
       singleItemTotal += pkg.price;
       if (dataOverageNum > 0) {
@@ -30,7 +32,7 @@ const LoadBalancerCalculator: React.FC<LoadBalancerCalculatorProps> = ({ onAddIt
     }
     
     const descKey = dataOverageNum > 0 ? 'load_balancer.desc_overage' : 'load_balancer.desc';
-    const pkgDetails = loadBalancerPricing.packages.find(p => p.name === selectedPackage);
+    const pkgDetails = loadBalancerPricing.packages.find((p: any) => p.name === selectedPackage);
     const descOptions = {
         name: pkgDetails?.name,
         connections: pkgDetails?.connections.toLocaleString(numberLocale),
@@ -43,7 +45,7 @@ const LoadBalancerCalculator: React.FC<LoadBalancerCalculatorProps> = ({ onAddIt
       description: t(descKey, descOptions),
       singlePrice: singleItemTotal
     };
-  }, [selectedPackage, dataOverage, quantity, t, numberLocale]);
+  }, [selectedPackage, dataOverage, quantity, t, numberLocale, loadBalancerPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -89,7 +91,7 @@ const LoadBalancerCalculator: React.FC<LoadBalancerCalculatorProps> = ({ onAddIt
               onChange={(e) => setSelectedPackage(e.target.value)}
               className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
-              {loadBalancerPricing.packages.map(p => <option key={p.name} value={p.name}>{t('load_balancer.package_option', { name: p.name, price: p.price.toLocaleString(numberLocale)})}</option>)}
+              {loadBalancerPricing.packages.map((p: any) => <option key={p.name} value={p.name}>{t('load_balancer.package_option', { name: p.name, price: p.price.toLocaleString(numberLocale)})}</option>)}
             </select>
           </div>
 

@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import type { EstimateItem } from '../../types';
-import { simpleStoragePricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface SimpleStorageCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,6 +10,8 @@ interface SimpleStorageCalculatorProps {
 
 const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const simpleStoragePricing = pricing!.simpleStorage;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [storageType, setStorageType] = useState<'standard' | 'cold'>('standard');
@@ -24,7 +26,7 @@ const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAdd
   useEffect(() => {
     const currentPackages = simpleStoragePricing.subscription[storageType];
     setSubscriptionPackage(currentPackages[0].gb);
-  }, [storageType]);
+  }, [storageType, simpleStoragePricing]);
 
   const { total, description, singlePrice } = useMemo(() => {
     let storageCost = 0;
@@ -35,7 +37,7 @@ const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAdd
     const quantityNum = parseInt(quantity, 10) || 1;
 
     if (billingModel === 'subscription') {
-      const pkg = availablePackages.find(p => p.gb === subscriptionPackage);
+      const pkg = availablePackages.find((p: any) => p.gb === subscriptionPackage);
       if (pkg) {
         storageCost = pkg.price;
         storageDisplayAmount = pkg.gb;
@@ -61,7 +63,7 @@ const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAdd
         description: t('simple_storage.desc', descOptions),
         singlePrice: singleItemTotal
     };
-  }, [storageType, billingModel, storageAmount, subscriptionPackage, dataTransfer, quantity, availablePackages, t]);
+  }, [storageType, billingModel, storageAmount, subscriptionPackage, dataTransfer, quantity, availablePackages, t, simpleStoragePricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -119,7 +121,7 @@ const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAdd
           <div className="mt-4 animate-fade-in">
             <label htmlFor="sub-package" className="block text-sm font-medium text-gray-700">{t('simple_storage.package')}</label>
             <select id="sub-package" value={subscriptionPackage} onChange={e => setSubscriptionPackage(Number(e.target.value))} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-              {availablePackages.map(p => <option key={p.gb} value={p.gb}>{t('simple_storage.package_option', { gb: p.gb.toLocaleString(numberLocale), price: p.price.toLocaleString(numberLocale)})}</option>)}
+              {availablePackages.map((p: any) => <option key={p.gb} value={p.gb}>{t('simple_storage.package_option', { gb: p.gb.toLocaleString(numberLocale), price: p.price.toLocaleString(numberLocale)})}</option>)}
             </select>
           </div>
         ) : (

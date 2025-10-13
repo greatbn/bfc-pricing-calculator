@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { EstimateItem } from '../../types';
-import { callCenterPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface CallCenterCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,12 +10,14 @@ interface CallCenterCalculatorProps {
 
 const CallCenterCalculator: React.FC<CallCenterCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const callCenterPricing = pricing!.callCenter;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
   const [selectedPackageName, setSelectedPackageName] = useState(callCenterPricing.packages[0].name);
   const [quantity, setQuantity] = useState('1');
 
   const { total, description, singlePrice } = useMemo(() => {
-    const selectedPackage = callCenterPricing.packages.find(p => p.name === selectedPackageName);
+    const selectedPackage = callCenterPricing.packages.find((p: any) => p.name === selectedPackageName);
     
     if (!selectedPackage) {
       return { total: 0, description: '', singlePrice: 0 };
@@ -30,7 +32,7 @@ const CallCenterCalculator: React.FC<CallCenterCalculatorProps> = ({ onAddItem }
       description: desc,
       singlePrice: price
     };
-  }, [selectedPackageName, quantity, t]);
+  }, [selectedPackageName, quantity, t, callCenterPricing]);
 
   const handleAdd = () => {
     const quantityNum = parseInt(quantity, 10) || 1;
@@ -77,7 +79,7 @@ const CallCenterCalculator: React.FC<CallCenterCalculatorProps> = ({ onAddItem }
               onChange={(e) => setSelectedPackageName(e.target.value)}
               className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-black border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
-              {callCenterPricing.packages.map(p => (
+              {callCenterPricing.packages.map((p: any) => (
                 <option key={p.name} value={p.name}>
                   {t('call_center.package_option', { name: p.name, details: p.details, price: p.price.toLocaleString(numberLocale)})}
                 </option>

@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import type { EstimateItem } from '../../types';
-import { kubernetesPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface KubernetesCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,6 +10,8 @@ interface KubernetesCalculatorProps {
 
 const KubernetesCalculator: React.FC<KubernetesCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const kubernetesPricing = pricing!.kubernetes;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [planType, setPlanType] = useState<'standard' | 'everywhere'>('standard');
@@ -22,7 +24,7 @@ const KubernetesCalculator: React.FC<KubernetesCalculatorProps> = ({ onAddItem }
     } else {
       setSelectedPackage(kubernetesPricing.everywhere[0].name);
     }
-  }, [planType]);
+  }, [planType, kubernetesPricing]);
 
   const { total, description, singlePrice } = useMemo(() => {
     let price = 0;
@@ -30,13 +32,13 @@ const KubernetesCalculator: React.FC<KubernetesCalculatorProps> = ({ onAddItem }
     const quantityNum = parseInt(quantity, 10) || 1;
 
     if (planType === 'standard') {
-      const pkg = kubernetesPricing.standard.find(p => p.name === selectedPackage);
+      const pkg = kubernetesPricing.standard.find((p: any) => p.name === selectedPackage);
       if (pkg) {
         price = pkg.price;
         desc = t('kubernetes.desc_standard', { name: pkg.name });
       }
     } else {
-      const pkg = kubernetesPricing.everywhere.find(p => p.name === selectedPackage);
+      const pkg = kubernetesPricing.everywhere.find((p: any) => p.name === selectedPackage);
       if (pkg) {
         price = pkg.price;
         desc = t('kubernetes.desc_everywhere', { name: pkg.name, nodes: pkg.maxNodes });
@@ -48,7 +50,7 @@ const KubernetesCalculator: React.FC<KubernetesCalculatorProps> = ({ onAddItem }
       description: desc,
       singlePrice: price
     };
-  }, [planType, selectedPackage, quantity, t]);
+  }, [planType, selectedPackage, quantity, t, kubernetesPricing]);
 
   const handleAdd = () => {
     const quantityNum = parseInt(quantity, 10) || 1;
@@ -113,7 +115,7 @@ const KubernetesCalculator: React.FC<KubernetesCalculatorProps> = ({ onAddItem }
             onChange={(e) => setSelectedPackage(e.target.value)}
             className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
           >
-            {packageOptions.map(p => <option key={p.name} value={p.name}>{t('kubernetes.package_option', { name: p.name, price: p.price.toLocaleString(numberLocale) })}</option>)}
+            {packageOptions.map((p: any) => <option key={p.name} value={p.name}>{t('kubernetes.package_option', { name: p.name, price: p.price.toLocaleString(numberLocale) })}</option>)}
           </select>
         </div>
         

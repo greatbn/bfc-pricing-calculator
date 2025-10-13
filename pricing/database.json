@@ -1,0 +1,20 @@
+{
+  "hoursPerMonth": 730,
+  "cpu": {
+    "premium": [{ "cores": 2, "price": 340 }, { "cores": 4, "price": 680 }, { "cores": 8, "price": 1360 }],
+    "enterprise": [{ "cores": 4, "price": 1020 }, { "cores": 8, "price": 2040 }, { "cores": 16, "price": 4080 }],
+    "dedicated": [{ "cores": 8, "price": 2720 }, { "cores": 16, "price": 5440 }, { "cores": 32, "price": 10880 }]
+  },
+  "ram": {
+    "premium": [{ "gb": 4, "price": 170 }, { "gb": 8, "price": 340 }, { "gb": 16, "price": 680 }],
+    "enterprise": [{ "gb": 16, "price": 680 }, { "gb": 32, "price": 1360 }, { "gb": 64, "price": 2720 }],
+    "dedicated": [{ "gb": 32, "price": 1820 }, { "gb": 64, "price": 3640 }, { "gb": 128, "price": 7280 }]
+  },
+  "disk": {
+    "pricePerGBHourFirst100GB": 1.5,
+    "pricePerGBHourAfter100GB": 1.2
+  },
+  "backup": {
+    "pricePerGBHour": 0.8
+  }
+}

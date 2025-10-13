@@ -1,0 +1,18 @@
+{
+  "cpu": {
+    "premium": 180000,
+    "enterprise": 250000,
+    "dedicated": 490000
+  },
+  "ram": {
+    "premium": 150000,
+    "enterprise": 200000,
+    "dedicated": 260000
+  },
+  "disk": {
+    "price": 4600
+  },
+  "wanIP": {
+    "price": 100000
+  }
+}

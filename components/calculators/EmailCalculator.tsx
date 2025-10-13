@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import type { EstimateItem } from '../../types';
-import { emailPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface EmailCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,6 +10,8 @@ interface EmailCalculatorProps {
 
 const EmailCalculator: React.FC<EmailCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const emailPricing = pricing!.email;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [planType, setPlanType] = useState<'shared' | 'dedicated'>('shared');
@@ -21,7 +23,7 @@ const EmailCalculator: React.FC<EmailCalculatorProps> = ({ onAddItem }) => {
     if (planType === 'dedicated') {
       setDedicatedPlan(emailPricing.dedicated[0].name);
     }
-  }, [planType]);
+  }, [planType, emailPricing]);
 
   const { total, description, singlePrice } = useMemo(() => {
     let price = 0;
@@ -33,7 +35,7 @@ const EmailCalculator: React.FC<EmailCalculatorProps> = ({ onAddItem }) => {
       price = emailsPerMonthNum * emailPricing.shared.pricePerEmail;
       desc = t('email.desc_shared', { emails: emailsPerMonthNum.toLocaleString(numberLocale) });
     } else {
-      const selectedPlan = emailPricing.dedicated.find(p => p.name === dedicatedPlan);
+      const selectedPlan = emailPricing.dedicated.find((p: any) => p.name === dedicatedPlan);
       if (selectedPlan) {
         price = selectedPlan.price;
         desc = t('email.desc_dedicated', { name: selectedPlan.name, emails: (selectedPlan.emailsPerDay * 30).toLocaleString(numberLocale) });
@@ -45,7 +47,7 @@ const EmailCalculator: React.FC<EmailCalculatorProps> = ({ onAddItem }) => {
       description: desc,
       singlePrice: price
     };
-  }, [planType, emailsPerMonth, dedicatedPlan, quantity, t, numberLocale]);
+  }, [planType, emailsPerMonth, dedicatedPlan, quantity, t, numberLocale, emailPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -127,7 +129,7 @@ const EmailCalculator: React.FC<EmailCalculatorProps> = ({ onAddItem }) => {
               onChange={(e) => setDedicatedPlan(e.target.value)}
               className="mt-1 block w-full md:w-1/2 bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
-              {emailPricing.dedicated.map(p => <option key={p.name} value={p.name}>{t('email.dedicated_option', { name: p.name, price: p.price.toLocaleString(numberLocale)})}</option>)}
+              {emailPricing.dedicated.map((p: any) => <option key={p.name} value={p.name}>{t('email.dedicated_option', { name: p.name, price: p.price.toLocaleString(numberLocale)})}</option>)}
             </select>
           </div>
         )}

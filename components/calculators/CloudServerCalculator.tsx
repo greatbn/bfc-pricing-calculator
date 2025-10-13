@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import type { EstimateItem } from '../../types';
-import { cloudServerPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface CloudServerCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -16,6 +16,8 @@ type DiskType = 'hdd' | 'ssd' | 'nvme';
 
 const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const cloudServerPricing = pricing!.cloudServer;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [chipModel, setChipModel] = useState<ChipModel>('amdGen4');
@@ -53,7 +55,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
       if(pricing.cpu) setCpuIntel(pricing.cpu[0].cores);
       if(pricing.ram) setRamIntel(pricing.ram[0].gb);
     }
-  }, [chipModel, tier, billingMethod]);
+  }, [chipModel, tier, billingMethod, cloudServerPricing]);
   
   const { total, description, singlePrice } = useMemo(() => {
     let singleItemTotal = 0;
@@ -72,8 +74,8 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
         singleItemTotal += pricing.ram[tier as TierAmd] * ramGbAmdNum;
       } else { // Intel Gen 2
         const pricing = cloudServerPricing.intelGen2.subscription[tier as TierIntel];
-        const cpuPrice = pricing.cpu?.find(c => c.cores === cpuIntel)?.price || 0;
-        const ramPrice = pricing.ram?.find(r => r.gb === ramIntel)?.price || 0;
+        const cpuPrice = pricing.cpu?.find((c: any) => c.cores === cpuIntel)?.price || 0;
+        const ramPrice = pricing.ram?.find((r: any) => r.gb === ramIntel)?.price || 0;
         singleItemTotal += cpuPrice;
         singleItemTotal += ramPrice;
       }
@@ -95,8 +97,8 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
         singleItemTotal += pricing.ram[tier as TierAmd] * ramGbAmdNum * effectiveHours;
       } else { // Intel Gen 2
         const pricing = cloudServerPricing.intelGen2.onDemand[tier as TierIntel];
-        const cpuPrice = pricing.cpu?.find(c => c.cores === cpuIntel)?.on || 0;
-        const ramPrice = pricing.ram?.find(r => r.gb === ramIntel)?.on || 0;
+        const cpuPrice = pricing.cpu?.find((c: any) => c.cores === cpuIntel)?.on || 0;
+        const ramPrice = pricing.ram?.find((r: any) => r.gb === ramIntel)?.on || 0;
         singleItemTotal += cpuPrice * effectiveHours;
         singleItemTotal += ramPrice * effectiveHours;
       }
@@ -133,7 +135,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
       singlePrice: finalSinglePrice
     };
 
-  }, [chipModel, billingMethod, tier, cpuCoresAmd, ramGbAmd, cpuIntel, ramIntel, diskType, diskSize, hours, quantity, t]);
+  }, [chipModel, billingMethod, tier, cpuCoresAmd, ramGbAmd, cpuIntel, ramIntel, diskType, diskSize, hours, quantity, t, cloudServerPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -237,7 +239,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
 
           <div>
              <label htmlFor="disk-type" className="block text-sm font-medium text-gray-700">{t('cloud_server.disk_type')}</label>
-             <select id="disk-type" value={diskType} onChange={e => setDiskType(e.target.value as DiskType)} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black rounded-md">
+             <select id="disk-type" value={diskType} onChange={e => setDiskType(e.target.value as DiskType)} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
                 <option value="hdd">HDD</option>
                 <option value="ssd">SSD</option>
                 <option value="nvme">NVMe</option>

@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import type { EstimateItem } from '../../types';
-import { backupSchedulePricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface BackupScheduleCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -10,6 +10,8 @@ interface BackupScheduleCalculatorProps {
 
 const BackupScheduleCalculator: React.FC<BackupScheduleCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const backupSchedulePricing = pricing!.backupSchedule;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
   const [quantity, setQuantity] = useState('1');
 
@@ -21,7 +23,7 @@ const BackupScheduleCalculator: React.FC<BackupScheduleCalculatorProps> = ({ onA
       description: t('backup_schedule.desc'),
       singlePrice: price
     };
-  }, [t, quantity]);
+  }, [t, quantity, backupSchedulePricing]);
 
   const handleAdd = () => {
     const quantityNum = parseInt(quantity, 10) || 1;

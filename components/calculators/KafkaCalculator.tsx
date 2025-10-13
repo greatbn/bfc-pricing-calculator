@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { EstimateItem } from '../../types';
-import { kafkaPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface KafkaCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -12,6 +12,8 @@ type Tier = 'premium' | 'enterprise' | 'dedicated';
 
 const KafkaCalculator: React.FC<KafkaCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const kafkaPricing = pricing!.kafka;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [tier, setTier] = useState<Tier>('premium');
@@ -55,7 +57,7 @@ const KafkaCalculator: React.FC<KafkaCalculatorProps> = ({ onAddItem }) => {
       description: t(descKey, descOptions),
       singlePrice: singleItemTotal
     };
-  }, [tier, cpuCores, ramGB, diskSize, hasWanIp, quantity, t]);
+  }, [tier, cpuCores, ramGB, diskSize, hasWanIp, quantity, t, kafkaPricing]);
 
   const handleAdd = () => {
     if (total > 0) {

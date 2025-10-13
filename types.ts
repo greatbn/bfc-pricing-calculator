@@ -23,7 +23,8 @@ export type ServiceId =
   | 'WanIp'
   | 'Snapshot'
   | 'BackupSchedule'
-  | 'CustomImage';
+  | 'CustomImage'
+  | 'AI';
 
 export interface Service {
   id: ServiceId;

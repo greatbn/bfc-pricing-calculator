@@ -1,0 +1,12 @@
+{
+  "subscription": {
+    "hdd": { "under100GB": 2000, "over100GB": 1000 },
+    "ssd": { "under100GB": 7000, "over100GB": 4600 },
+    "nvme": { "under100GB": 10500, "over100GB": 6900 }
+  },
+  "onDemand": {
+    "hdd": { "under100GB": 3.6, "over100GB": 1.8 },
+    "ssd": { "under100GB": 12.6, "over100GB": 8.3 },
+    "nvme": { "under100GB": 19.0, "over100GB": 12.5 }
+  }
+}

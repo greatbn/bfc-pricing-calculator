@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import type { EstimateItem } from '../../types';
-import { wanIpPricing } from './calculatorData';
 import CalculatorWrapper from './CalculatorWrapper';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { usePricing } from '../../contexts/PricingContext';
 
 interface WanIpCalculatorProps {
   onAddItem: (item: EstimateItem) => void;
@@ -12,6 +12,8 @@ type BillingMethod = 'subscription' | 'onDemand';
 
 const WanIpCalculator: React.FC<WanIpCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
+  const { pricing } = usePricing();
+  const wanIpPricing = pricing!.wanIp;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [billingMethod, setBillingMethod] = useState<BillingMethod>('subscription');
@@ -26,7 +28,7 @@ const WanIpCalculator: React.FC<WanIpCalculatorProps> = ({ onAddItem }) => {
       description: t(descKey),
       singlePrice: price
     };
-  }, [billingMethod, quantity, t]);
+  }, [billingMethod, quantity, t, wanIpPricing]);
 
   const handleAdd = () => {
     const quantityNum = parseInt(quantity, 10) || 1;

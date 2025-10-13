@@ -1,0 +1,19 @@
+{
+  "subscription": {
+    "standard": [
+      { "gb": 500, "price": 350000 },
+      { "gb": 1024, "price": 650000 },
+      { "gb": 5120, "price": 3000000 }
+    ],
+    "cold": [
+      { "gb": 1024, "price": 300000 },
+      { "gb": 5120, "price": 1400000 },
+      { "gb": 10240, "price": 2500000 }
+    ]
+  },
+  "payAsYouGo": {
+    "standard": { "pricePerGBHour": 1.0 },
+    "cold": { "pricePerGBHour": 0.5 }
+  },
+  "dataTransferPricePerGB": 2000
+}
