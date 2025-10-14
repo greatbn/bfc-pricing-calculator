@@ -20,9 +20,9 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
   const cloudServerPricing = pricing!.cloudServer;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
-  const [chipModel, setChipModel] = useState<ChipModel>('amdGen4');
+  const [chipModel, setChipModel] = useState<ChipModel>('intelGen2');
   const [billingMethod, setBillingMethod] = useState<BillingMethod>('subscription');
-  const [tier, setTier] = useState<TierAmd | TierIntel>('premium');
+  const [tier, setTier] = useState<TierAmd | TierIntel>('basic');
   
   // Unified states for both chip models
   const [cpuCores, setCpuCores] = useState(4);
