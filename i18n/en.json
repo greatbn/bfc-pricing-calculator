@@ -1,7 +1,6 @@
 {
   "header": {
-    "title": "Bizfly Cloud Cost Calculator",
-    "ai_estimate_button": "AI Estimate Generator"
+    "title": "Bizfly Cloud Cost Calculator"
   },
   "services": {
     "select_service": "Select a Service to Estimate",
@@ -46,22 +45,6 @@
     "per_month": "/month",
     "per_hours": "for {hours} hours",
     "quantity": "Quantity"
-  },
-  "ai_estimate": {
-    "title": "AI Estimate Generator",
-    "description": "Generate a cost estimate by uploading an image (like an invoice or architecture diagram) or describing your infrastructure needs in the text box below.",
-    "tab_upload": "Upload Image",
-    "tab_text": "Enter Text",
-    "upload_label": "Click to upload or drag and drop",
-    "upload_supported": "PNG, JPG, GIF up to 10MB",
-    "text_label": "Describe your requirements",
-    "text_placeholder": "e.g., 'I need two premium cloud servers with 4vCPU, 8GB RAM, and 100GB SSD each. Also, add a managed database with 2vCPU and 4GB RAM.'",
-    "generate_button": "Generate Estimate",
-    "generating_message": "Analyzing your request with AI...",
-    "error_title": "An error occurred",
-    "results_title": "Generated Estimate",
-    "add_to_main_estimate": "Add Items to Main Estimate",
-    "no_results": "The AI could not identify any services from your request. Please try again with more details."
   },
   "cloud_server": {
     "title": "Cloud Server Calculator",

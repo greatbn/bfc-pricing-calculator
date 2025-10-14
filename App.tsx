@@ -16,12 +16,9 @@ import WanIpCalculator from './components/calculators/WanIpCalculator';
 import SnapshotCalculator from './components/calculators/SnapshotCalculator';
 import BackupScheduleCalculator from './components/calculators/BackupScheduleCalculator';
 import CustomImageCalculator from './components/calculators/CustomImageCalculator';
-import AiEstimatePage from './components/AiEstimatePage';
 import type { EstimateItem, Service, ServiceId } from './types';
 import { useLanguage } from './i18n/LanguageContext';
 import { usePricing } from './contexts/PricingContext';
-
-export type Page = 'calculator' | 'aiEstimate';
 
 // Icons for the service selector
 const serviceIcons: Record<ServiceId, React.ReactNode> = {
@@ -48,7 +45,6 @@ const serviceIds: ServiceId[] = [
 const App: React.FC = () => {
   const { t } = useLanguage();
   const { pricing, isLoading } = usePricing();
-  const [currentPage, setCurrentPage] = useState<Page>('calculator');
   const [activeService, setActiveService] = useState<ServiceId>('CloudServer');
   const [estimateItems, setEstimateItems] = useState<EstimateItem[]>([]);
   const [billingCycle, setBillingCycle] = useState<number>(1);
@@ -68,14 +64,6 @@ const App: React.FC = () => {
 
   const handleAddItem = useCallback((item: EstimateItem) => {
     setEstimateItems(prevItems => [...prevItems, item]);
-  }, []);
-  
-  const addMultipleItems = useCallback((items: Omit<EstimateItem, 'id'>[]) => {
-    const newItems = items.map(item => ({
-      ...item,
-      id: `ai-${Date.now()}-${Math.random()}`
-    }));
-    setEstimateItems(prevItems => [...prevItems, ...newItems]);
   }, []);
 
   const handleRemoveItem = useCallback((id: string) => {
@@ -135,49 +123,45 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans">
-      <Header onNavigate={setCurrentPage} currentPage={currentPage}/>
+      <Header />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {currentPage === 'calculator' ? (
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
-            <div className="w-full lg:w-2/3 xl:w-3/4 space-y-8">
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">{t('services.select_service')}</h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-                      {services.map(service => (
-                          <button
-                              key={service.id}
-                              onClick={() => handleServiceClick(service.id)}
-                              className={`p-4 rounded-lg text-center transition-all duration-200 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 cta-bfc-pc-${service.id.toLowerCase()} ${
-                                  activeService === service.id
-                                  ? 'bg-blue-700 text-white shadow-md' 
-                                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                              }`}
-                          >
-                              <div className={`transition-colors duration-200 ${activeService === service.id ? 'text-white' : 'text-blue-700'}`}>
-                                  {service.icon}
-                              </div>
-                              <span className="text-sm font-semibold block">{service.name}</span>
-                          </button>
-                      ))}
-                  </div>
-              </div>
-              
-              {activeCalculator}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="w-full lg:w-2/3 xl:w-3/4 space-y-8">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">{t('services.select_service')}</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                    {services.map(service => (
+                        <button
+                            key={service.id}
+                            onClick={() => handleServiceClick(service.id)}
+                            className={`p-4 rounded-lg text-center transition-all duration-200 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 cta-bfc-pc-${service.id.toLowerCase()} ${
+                                activeService === service.id
+                                ? 'bg-blue-700 text-white shadow-md' 
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            }`}
+                        >
+                            <div className={`transition-colors duration-200 ${activeService === service.id ? 'text-white' : 'text-blue-700'}`}>
+                                {service.icon}
+                            </div>
+                            <span className="text-sm font-semibold block">{service.name}</span>
+                        </button>
+                    ))}
+                </div>
             </div>
             
-            <CostSummary
-              items={estimateItems}
-              onRemoveItem={handleRemoveItem}
-              onClearAll={handleClearAll}
-              billingCycle={billingCycle}
-              onBillingCycleChange={setBillingCycle}
-              discount={discount}
-              onDiscountChange={setDiscount}
-            />
+            {activeCalculator}
           </div>
-        ) : (
-          <AiEstimatePage onAddItems={addMultipleItems} onNavigate={setCurrentPage} />
-        )}
+          
+          <CostSummary
+            items={estimateItems}
+            onRemoveItem={handleRemoveItem}
+            onClearAll={handleClearAll}
+            billingCycle={billingCycle}
+            onBillingCycleChange={setBillingCycle}
+            discount={discount}
+            onDiscountChange={setDiscount}
+          />
+        </div>
       </main>
     </div>
   );
