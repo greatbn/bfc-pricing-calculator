@@ -21,38 +21,24 @@ import type { EstimateItem, Service, ServiceId } from './types';
 import { useLanguage } from './i18n/LanguageContext';
 import { usePricing } from './contexts/PricingContext';
 
-import cloudServerIcon from './assets/icons/cloudserver.svg';
-import databaseIcon from './assets/icons/icon-database.svg';
-import simpleStorageIcon from './assets/icons/icon-simple-storage.svg';
-import blockStorageIcon from './assets/icons/icon-block-storage.svg';
-import loadBalancerIcon from './assets/icons/icon-load-balancer.svg';
-import kubernetesIcon from './assets/icons/icon-kubernetes-engine.svg';
-import kafkaIcon from './assets/icons/icon-kafka-cloud.svg';
-import callCenterIcon from './assets/icons/icon-call-center.svg';
-import businessEmailIcon from './assets/icons/icon-business-email.svg';
-import emailTransactionIcon from './assets/icons/icon-email-transaction.svg';
-import lmsIcon from './assets/icons/icon-lms.svg';
-import backupScheduleIcon from './assets/icons/icon-cloud-backup.svg';
-
-
 export type Page = 'calculator' | 'aiEstimate';
 
 // Icons for the service selector
 const serviceIcons: Record<ServiceId, React.ReactNode> = {
-  CloudServer: <img src={cloudServerIcon} alt="Cloud Server" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  Database: <img src={databaseIcon} alt="Database" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  SimpleStorage: <img src={simpleStorageIcon} alt="Simple Storage" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  BlockStorage: <img src={blockStorageIcon} alt="Block Storage" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  LoadBalancer: <img src={loadBalancerIcon} alt="Load Balancer" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  Kubernetes: <img src={kubernetesIcon} alt="Kubernetes" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  Kafka: <img src={kafkaIcon} alt="Kafka" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  CallCenter: <img src={callCenterIcon} alt="Call Center" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  BusinessEmail: <img src={businessEmailIcon} alt="Business Email" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  EmailTransaction: <img src={emailTransactionIcon} alt="Email Transaction" className="h-8 w-8 mx-auto mb-2 object-contain" />,
-  LMS: <img src={lmsIcon} alt="LMS" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  CloudServer: <img src="/public/assets/icons/cloudserver.svg" alt="Cloud Server" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  Database: <img src="/public/assets/icons/icon-database.svg" alt="Database" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  SimpleStorage: <img src="/public/assets/icons/icon-simple-storage.svg" alt="Simple Storage" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  BlockStorage: <img src="/public/assets/icons/icon-block-storage.svg" alt="Block Storage" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  LoadBalancer: <img src="/public/assets/icons/icon-load-balancer.svg" alt="Load Balancer" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  Kubernetes: <img src="/public/assets/icons/icon-kubernetes-engine.svg" alt="Kubernetes" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  Kafka: <img src="/public/assets/icons/icon-kafka-cloud.svg" alt="Kafka" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  CallCenter: <img src="/public/assets/icons/icon-call-center.svg" alt="Call Center" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  BusinessEmail: <img src="/public/assets/icons/icon-business-email.svg" alt="Business Email" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  EmailTransaction: <img src="/public/assets/icons/icon-email-transaction.svg" alt="Email Transaction" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  LMS: <img src="/public/assets/icons/icon-lms.svg" alt="LMS" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   WanIp: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9V3m0 18a9 9 0 009-9M3 12a9 9 0 019-9m-9 9a9 9 0 009 9m-9-9h18" /></svg>,
   Snapshot: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
-  BackupSchedule: <img src={backupScheduleIcon} alt="Backup Schedule" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  BackupSchedule: <img src="/public/assets/icons/icon-cloud-backup.svg" alt="Backup Schedule" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   CustomImage: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
 };
 const serviceIds: ServiceId[] = [
@@ -101,11 +87,7 @@ const App: React.FC = () => {
   }, []);
   
   const handleServiceClick = (serviceId: ServiceId) => {
-    if (serviceId === 'AI') {
-      setCurrentPage('aiEstimate');
-    } else {
-      setActiveService(serviceId);
-    }
+    setActiveService(serviceId);
   };
 
 
