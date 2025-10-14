@@ -67,8 +67,8 @@ const WanIpCalculator: React.FC<WanIpCalculatorProps> = ({ onAddItem }) => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('wan_ip.billing_method')}</label>
             <div className="flex rounded-md shadow-sm">
-              <button type="button" onClick={() => setBillingMethod('subscription')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${billingMethod === 'subscription' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>{t('wan_ip.subscription')}</button>
-              <button type="button" onClick={() => setBillingMethod('onDemand')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${billingMethod === 'onDemand' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>{t('wan_ip.on_demand')}</button>
+              <button type="button" onClick={() => setBillingMethod('subscription')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${billingMethod === 'subscription' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-subscription`}>{t('wan_ip.subscription')}</button>
+              <button type="button" onClick={() => setBillingMethod('onDemand')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${billingMethod === 'onDemand' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-ondemand`}>{t('wan_ip.on_demand')}</button>
             </div>
           </div>
         </div>

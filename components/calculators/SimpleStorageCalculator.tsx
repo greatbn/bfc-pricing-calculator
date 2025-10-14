@@ -104,15 +104,15 @@ const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAdd
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('simple_storage.storage_type')}</label>
             <div className="flex rounded-md shadow-sm">
-              <button type="button" onClick={() => setStorageType('standard')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${storageType === 'standard' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>{t('simple_storage.standard')}</button>
-              <button type="button" onClick={() => setStorageType('cold')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${storageType === 'cold' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>{t('simple_storage.cold')}</button>
+              <button type="button" onClick={() => setStorageType('standard')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${storageType === 'standard' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-standard`}>{t('simple_storage.standard')}</button>
+              <button type="button" onClick={() => setStorageType('cold')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${storageType === 'cold' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-cold`}>{t('simple_storage.cold')}</button>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('simple_storage.billing_model')}</label>
             <div className="flex rounded-md shadow-sm">
-              <button type="button" onClick={() => setBillingModel('subscription')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${billingModel === 'subscription' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>{t('simple_storage.subscription')}</button>
-              <button type="button" onClick={() => setBillingModel('payg')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${billingModel === 'payg' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>{t('simple_storage.payg')}</button>
+              <button type="button" onClick={() => setBillingModel('subscription')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${billingModel === 'subscription' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-subscription`}>{t('simple_storage.subscription')}</button>
+              <button type="button" onClick={() => setBillingModel('payg')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${billingModel === 'payg' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-payasyougo`}>{t('simple_storage.payg')}</button>
             </div>
           </div>
         </div>

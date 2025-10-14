@@ -91,13 +91,13 @@ const AiEstimatePage: React.FC<AiEstimatePageProps> = ({ onAddItems, onNavigate 
         <nav className="-mb-px flex space-x-6" aria-label="Tabs">
           <button
             onClick={() => setActiveTab('upload')}
-            className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'upload' ? 'border-purple-500 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+            className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'upload' ? 'border-purple-500 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cta-bfc-pc-uploadimage`}
           >
             {t('ai_estimate.tab_upload')}
           </button>
           <button
             onClick={() => setActiveTab('text')}
-            className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'text' ? 'border-purple-500 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+            className={`whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'text' ? 'border-purple-500 text-purple-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cta-bfc-pc-entertext`}
           >
             {t('ai_estimate.tab_text')}
           </button>
@@ -146,7 +146,7 @@ const AiEstimatePage: React.FC<AiEstimatePageProps> = ({ onAddItems, onNavigate 
         <button
           onClick={handleGenerate}
           disabled={isLoading || (activeTab === 'upload' && !imageFile)}
-          className="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+          className="w-full bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center cta-bfc-pc-generateestimate"
         >
           {isLoading ? (
             <>
@@ -186,7 +186,7 @@ const AiEstimatePage: React.FC<AiEstimatePageProps> = ({ onAddItems, onNavigate 
           <div className="mt-6">
             <button
               onClick={handleAddItems}
-              className="w-full bg-blue-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-800 transition-colors flex items-center justify-center"
+              className="w-full bg-blue-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-800 transition-colors flex items-center justify-center cta-bfc-pc-additemstomainestimate"
             >
               {t('ai_estimate.add_to_main_estimate')}
             </button>

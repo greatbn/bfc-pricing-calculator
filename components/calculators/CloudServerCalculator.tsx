@@ -29,7 +29,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
   const [ramGb, setRamGb] = useState(8);
   
   const [diskType, setDiskType] = useState<DiskType>('ssd');
-  const [diskSize, setDiskSize] = useState('100');
+  const [diskSize, setDiskSize] = useState('10');
   const [hours, setHours] = useState('730');
   const [quantity, setQuantity] = useState('1');
 
@@ -182,15 +182,15 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
            <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('cloud_server.chip_model')}</label>
             <div className="flex rounded-md shadow-sm">
-              <button type="button" onClick={() => setChipModel('amdGen4')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${chipModel === 'amdGen4' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>AMD Gen 4</button>
-              <button type="button" onClick={() => setChipModel('intelGen2')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${chipModel === 'intelGen2' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>Intel Gen 2</button>
+              <button type="button" onClick={() => setChipModel('amdGen4')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${chipModel === 'amdGen4' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-amdgen4`}>AMD Gen 4</button>
+              <button type="button" onClick={() => setChipModel('intelGen2')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${chipModel === 'intelGen2' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-intelgen2`}>Intel Gen 2</button>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('cloud_server.billing_method')}</label>
             <div className="flex rounded-md shadow-sm">
-              <button type="button" onClick={() => setBillingMethod('subscription')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${billingMethod === 'subscription' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>{t('cloud_server.subscription')}</button>
-              <button type="button" onClick={() => setBillingMethod('onDemand')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${billingMethod === 'onDemand' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>{t('cloud_server.on_demand')}</button>
+              <button type="button" onClick={() => setBillingMethod('subscription')} className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${billingMethod === 'subscription' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-subscription`}>{t('cloud_server.subscription')}</button>
+              <button type="button" onClick={() => setBillingMethod('onDemand')} className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${billingMethod === 'onDemand' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-ondemand`}>{t('cloud_server.on_demand')}</button>
             </div>
           </div>
         </div>

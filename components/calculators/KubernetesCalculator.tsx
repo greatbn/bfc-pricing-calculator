@@ -93,14 +93,14 @@ const KubernetesCalculator: React.FC<KubernetesCalculatorProps> = ({ onAddItem }
             <button
               type="button"
               onClick={() => setPlanType('standard')}
-              className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-1/2 ${planType === 'standard' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-1/2 ${planType === 'standard' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-standard`}
             >
               {t('kubernetes.standard')}
             </button>
             <button
               type="button"
               onClick={() => setPlanType('everywhere')}
-              className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-1/2 ${planType === 'everywhere' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-1/2 ${planType === 'everywhere' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-everywhere`}
             >
               {t('kubernetes.everywhere')}
             </button>

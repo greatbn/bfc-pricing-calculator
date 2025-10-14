@@ -90,14 +90,14 @@ const EmailCalculator: React.FC<EmailCalculatorProps> = ({ onAddItem }) => {
             <button
               type="button"
               onClick={() => setPlanType('shared')}
-              className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${planType === 'shared' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              className={`px-4 py-2 border border-black text-sm font-medium rounded-l-md w-full ${planType === 'shared' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-sharedip`}
             >
               {t('email.shared_ip')}
             </button>
             <button
               type="button"
               onClick={() => setPlanType('dedicated')}
-              className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${planType === 'dedicated' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              className={`-ml-px px-4 py-2 border border-black text-sm font-medium rounded-r-md w-full ${planType === 'dedicated' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'} cta-bfc-pc-dedicatedip`}
             >
               {t('email.dedicated_ip')}
             </button>

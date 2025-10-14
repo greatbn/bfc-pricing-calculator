@@ -143,7 +143,7 @@ const App: React.FC = () => {
                           <button
                               key={service.id}
                               onClick={() => setActiveService(service.id)}
-                              className={`p-4 rounded-lg text-center transition-all duration-200 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 ${
+                              className={`p-4 rounded-lg text-center transition-all duration-200 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 cta-bfc-pc-${service.id.toLowerCase()} ${
                                   activeService === service.id 
                                   ? 'bg-blue-700 text-white shadow-md' 
                                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

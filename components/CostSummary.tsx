@@ -125,7 +125,7 @@ const CostSummary: React.FC<CostSummaryProps> = ({ items, onRemoveItem, onClearA
                         {item.quantity} x {item.price.toLocaleString(numberLocale)} VNĐ
                       </p>
                     </div>
-                    <button onClick={() => onRemoveItem(item.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                    <button onClick={() => onRemoveItem(item.id)} className="text-gray-400 hover:text-red-500 transition-colors cta-bfc-pc-removeitem">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
@@ -159,7 +159,7 @@ const CostSummary: React.FC<CostSummaryProps> = ({ items, onRemoveItem, onClearA
             <div className="mt-6 space-y-2">
                <button 
                 onClick={handleExportPDF}
-                className="w-full bg-blue-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-800 transition-colors flex items-center justify-center"
+                className="w-full bg-blue-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-800 transition-colors flex items-center justify-center cta-bfc-pc-exporttopdf"
               >
                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
@@ -168,7 +168,7 @@ const CostSummary: React.FC<CostSummaryProps> = ({ items, onRemoveItem, onClearA
               </button>
               <button 
                 onClick={handleExportCSV}
-                className="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center"
+                className="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center cta-bfc-pc-exporttocsv"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M10.75 2.75a.75.75 0 00-1.5 0v8.614L6.295 8.235a.75.75 0 10-1.09 1.03l4.25 4.5a.75.75 0 001.09 0l4.25-4.5a.75.75 0 00-1.09-1.03l-2.955 3.129V2.75z" />
@@ -176,7 +176,7 @@ const CostSummary: React.FC<CostSummaryProps> = ({ items, onRemoveItem, onClearA
                 </svg>
                 {t('summary.export_csv')}
               </button>
-              <button onClick={onClearAll} className="w-full bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
+              <button onClick={onClearAll} className="w-full bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors cta-bfc-pc-clearall">
                 {t('summary.clear_all')}
               </button>
             </div>
