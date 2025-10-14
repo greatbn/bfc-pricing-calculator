@@ -156,6 +156,8 @@
     "cpu_cores": "CPU Cores",
     "ram_gb": "RAM (GB)",
     "disk_gb": "Disk Size (GB)",
+    "package": "Package",
+    "package_option": "{cpu} vCPU / {ram} GB RAM - {price} VNĐ/month",
     "include_wan": "Include WAN IP (+{price} VNĐ)",
     "desc": "Tier: {tier}, {cpu} vCPU, {ram} GB RAM, {disk} GB Disk",
     "desc_wan": "Tier: {tier}, {cpu} vCPU, {ram} GB RAM, {disk} GB Disk + WAN IP"

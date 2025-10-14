@@ -156,6 +156,8 @@
     "cpu_cores": "Số lõi CPU",
     "ram_gb": "RAM (GB)",
     "disk_gb": "Dung lượng ổ đĩa (GB)",
+    "package": "Gói cấu hình",
+    "package_option": "{cpu} vCPU / {ram} GB RAM - {price} VNĐ/tháng",
     "include_wan": "Bao gồm WAN IP (+{price} VNĐ)",
     "desc": "Loại: {tier}, {cpu} vCPU, {ram} GB RAM, {disk} GB ổ đĩa",
     "desc_wan": "Loại: {tier}, {cpu} vCPU, {ram} GB RAM, {disk} GB ổ đĩa + WAN IP"

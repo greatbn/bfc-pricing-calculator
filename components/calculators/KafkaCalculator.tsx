@@ -17,25 +17,25 @@ const KafkaCalculator: React.FC<KafkaCalculatorProps> = ({ onAddItem }) => {
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [tier, setTier] = useState<Tier>('premium');
-  const [cpuCores, setCpuCores] = useState('4');
-  const [ramGB, setRamGB] = useState('16');
+  const [selectedPackageIndex, setSelectedPackageIndex] = useState(2); // Default to 4c/16gb
   const [diskSize, setDiskSize] = useState('100');
   const [hasWanIp, setHasWanIp] = useState(true);
   const [quantity, setQuantity] = useState('1');
 
   const { total, description, singlePrice } = useMemo(() => {
     let singleItemTotal = 0;
+    
+    const selectedPackage = kafkaPricing.packages[selectedPackageIndex];
+     if (!selectedPackage) {
+        return { total: 0, description: '', singlePrice: 0 };
+    }
 
-    const cpuCoresNum = parseInt(cpuCores, 10) || 1;
-    const ramGBNum = parseInt(ramGB, 10) || 1;
     const diskSizeNum = parseInt(diskSize, 10) || 10;
     const quantityNum = parseInt(quantity, 10) || 1;
 
-    const cpuPrice = kafkaPricing.cpu[tier] * cpuCoresNum;
-    singleItemTotal += cpuPrice;
-
-    const ramPrice = kafkaPricing.ram[tier] * ramGBNum;
-    singleItemTotal += ramPrice;
+    const cpuPrice = kafkaPricing.cpu[tier] * selectedPackage.cpu;
+    const ramPrice = kafkaPricing.ram[tier] * selectedPackage.ram;
+    singleItemTotal += cpuPrice + ramPrice;
     
     const diskPrice = kafkaPricing.disk.price * diskSizeNum;
     singleItemTotal += diskPrice;
@@ -47,8 +47,8 @@ const KafkaCalculator: React.FC<KafkaCalculatorProps> = ({ onAddItem }) => {
     const descKey = hasWanIp ? 'kafka.desc_wan' : 'kafka.desc';
     const descOptions = {
         tier: tier,
-        cpu: cpuCoresNum,
-        ram: ramGBNum,
+        cpu: selectedPackage.cpu,
+        ram: selectedPackage.ram,
         disk: diskSizeNum
     };
 
@@ -57,7 +57,7 @@ const KafkaCalculator: React.FC<KafkaCalculatorProps> = ({ onAddItem }) => {
       description: t(descKey, descOptions),
       singlePrice: singleItemTotal
     };
-  }, [tier, cpuCores, ramGB, diskSize, hasWanIp, quantity, t, kafkaPricing]);
+  }, [tier, selectedPackageIndex, diskSize, hasWanIp, quantity, t, kafkaPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -105,13 +105,28 @@ const KafkaCalculator: React.FC<KafkaCalculatorProps> = ({ onAddItem }) => {
           </div>
           
           <div>
-            <label htmlFor="cpu" className="block text-sm font-medium text-gray-700">{t('kafka.cpu_cores')}</label>
-             <input type="number" id="cpu" value={cpuCores} onChange={e => setCpuCores(e.target.value)} onBlur={() => handleBlur(setCpuCores, cpuCores, 1)} min="1" step="1" className="mt-1 block w-full bg-white pl-3 pr-2 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" />
-          </div>
-
-          <div>
-            <label htmlFor="ram" className="block text-sm font-medium text-gray-700">{t('kafka.ram_gb')}</label>
-            <input type="number" id="ram" value={ramGB} onChange={e => setRamGB(e.target.value)} onBlur={() => handleBlur(setRamGB, ramGB, 1)} min="1" step="1" className="mt-1 block w-full bg-white pl-3 pr-2 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" />
+            <label htmlFor="kafka-package" className="block text-sm font-medium text-gray-700">{t('kafka.package')}</label>
+            <select 
+              id="kafka-package" 
+              value={selectedPackageIndex} 
+              onChange={e => setSelectedPackageIndex(Number(e.target.value))} 
+              className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+            >
+              {kafkaPricing.packages.map((pkg: any, index: number) => {
+                const cpuCost = kafkaPricing.cpu[tier] * pkg.cpu;
+                const ramCost = kafkaPricing.ram[tier] * pkg.ram;
+                const packagePrice = cpuCost + ramCost;
+                return (
+                  <option key={index} value={index}>
+                    {t('kafka.package_option', { 
+                      cpu: pkg.cpu, 
+                      ram: pkg.ram, 
+                      price: packagePrice.toLocaleString(numberLocale) 
+                    })}
+                  </option>
+                );
+              })}
+            </select>
           </div>
 
           <div>
