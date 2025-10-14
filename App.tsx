@@ -16,6 +16,7 @@ import WanIpCalculator from './components/calculators/WanIpCalculator';
 import SnapshotCalculator from './components/calculators/SnapshotCalculator';
 import BackupScheduleCalculator from './components/calculators/BackupScheduleCalculator';
 import CustomImageCalculator from './components/calculators/CustomImageCalculator';
+import CdnCalculator from './components/calculators/CdnCalculator';
 import type { EstimateItem, Service, ServiceId } from './types';
 import { useLanguage } from './i18n/LanguageContext';
 import { usePricing } from './contexts/PricingContext';
@@ -37,9 +38,10 @@ const serviceIcons: Record<ServiceId, React.ReactNode> = {
   Snapshot: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
   BackupSchedule: <img src="/public/assets/icons/icon-cloud-backup.svg" alt="Backup Schedule" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   CustomImage: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
+  CDN: <img src="/public/assets/icons/CDN.svg" alt="CDN" className="h-8 w-8 mx-auto mb-2 object-contain" />,
 };
 const serviceIds: ServiceId[] = [
-    'CloudServer', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
+    'CloudServer', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'CDN', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
 ];
 
 const App: React.FC = () => {
@@ -93,6 +95,7 @@ const App: React.FC = () => {
       case 'BusinessEmail': return <BusinessEmailCalculator onAddItem={handleAddItem} />;
       case 'EmailTransaction': return <EmailCalculator onAddItem={handleAddItem} />;
       case 'LMS': return <LMSCalculator onAddItem={handleAddItem} />;
+      case 'CDN': return <CdnCalculator onAddItem={handleAddItem} />;
       case 'WanIp': return <WanIpCalculator onAddItem={handleAddItem} />;
       case 'Snapshot': return <SnapshotCalculator onAddItem={handleAddItem} />;
       case 'BackupSchedule': return <BackupScheduleCalculator onAddItem={handleAddItem} />;

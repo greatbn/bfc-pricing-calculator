@@ -18,7 +18,8 @@
     "WanIp": "WAN IP",
     "Snapshot": "Snapshot",
     "BackupSchedule": "Backup Schedule",
-    "CustomImage": "Custom Image"
+    "CustomImage": "Custom Image",
+    "CDN": "CDN"
   },
   "summary": {
     "title": "Cost Estimate",
@@ -179,6 +180,14 @@
     "storage_note": "Billed in blocks of {blockSize} GB at {price} VNĐ/block.",
     "desc": "Package: {name} ({ccu} CCU, {storage} GB free storage)",
     "desc_additional": "Package: {name} ({ccu} CCU, {storage} GB free storage) + {additional} GB additional storage"
+  },
+  "cdn": {
+    "title": "CDN Calculator",
+    "description": "Estimate your Content Delivery Network (CDN) costs based on your monthly data transfer volume.",
+    "data_transfer_gb": "Datatransfer Volume (GB/month)",
+    "price_tier_info": "Your current price tier: {price} VND/GB",
+    "min_usage_note": "Note: Minimum usage is 200 GB/month (100,000 VND/month).",
+    "desc": "Datatransfer Volume: {transfer} GB/month"
   },
   "wan_ip": {
     "title": "WAN IP Calculator",

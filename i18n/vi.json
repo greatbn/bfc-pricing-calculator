@@ -18,7 +18,8 @@
     "WanIp": "WAN IP",
     "Snapshot": "Snapshot",
     "BackupSchedule": "Backup Schedule",
-    "CustomImage": "Custom Image"
+    "CustomImage": "Custom Image",
+    "CDN": "CDN"
   },
   "summary": {
     "title": "Bảng dự toán chi phí",
@@ -179,6 +180,14 @@
     "storage_note": "Tính phí theo khối {blockSize} GB với giá {price} VNĐ/khối.",
     "desc": "Gói: {name} ({ccu} CCU, {storage} GB lưu trữ miễn phí)",
     "desc_additional": "Gói: {name} ({ccu} CCU, {storage} GB lưu trữ miễn phí) + {additional} GB lưu trữ bổ sung"
+  },
+  "cdn": {
+    "title": "Công cụ tính CDN",
+    "description": "Ước tính chi phí Mạng phân phối nội dung (CDN) dựa trên lưu lượng dữ liệu hàng tháng của bạn.",
+    "data_transfer_gb": "Lưu lượng Datatransfer (GB/tháng)",
+    "price_tier_info": "Đơn giá hiện tại của bạn: {price} VNĐ/GB",
+    "min_usage_note": "Lưu ý: Mức sử dụng tối thiểu là 200 GB/tháng (100.000 VNĐ/tháng).",
+    "desc": "Lưu lượng Datatransfer: {transfer} GB/tháng"
   },
   "wan_ip": {
     "title": "Công cụ tính WAN IP",
