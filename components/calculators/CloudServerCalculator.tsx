@@ -24,13 +24,9 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
   const [billingMethod, setBillingMethod] = useState<BillingMethod>('subscription');
   const [tier, setTier] = useState<TierAmd | TierIntel>('premium');
   
-  // AMD states
-  const [cpuCoresAmd, setCpuCoresAmd] = useState('4');
-  const [ramGbAmd, setRamGbAmd] = useState('8');
-
-  // Intel states
-  const [cpuIntel, setCpuIntel] = useState(cloudServerPricing.intelGen2.subscription.premium.cpu[0].cores);
-  const [ramIntel, setRamIntel] = useState(cloudServerPricing.intelGen2.subscription.premium.ram[0].gb);
+  // Unified states for both chip models
+  const [cpuCores, setCpuCores] = useState(4);
+  const [ramGb, setRamGb] = useState(8);
   
   const [diskType, setDiskType] = useState<DiskType>('ssd');
   const [diskSize, setDiskSize] = useState('100');
@@ -39,78 +35,85 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
 
   const tiersForModel = chipModel === 'amdGen4' ? cloudServerPricing.amdGen4.tiers : cloudServerPricing.intelGen2.tiers;
 
+  const currentPricingTier = useMemo(() => {
+    return (cloudServerPricing[chipModel] as any)[billingMethod][tier];
+  }, [chipModel, billingMethod, tier, cloudServerPricing]);
+
+  const availableDiskTypes = useMemo(() => {
+    return currentPricingTier?.disk ? Object.keys(currentPricingTier.disk) as DiskType[] : [];
+  }, [currentPricingTier]);
+  
   // Effects to reset selections on change
   useEffect(() => {
-    setTier(chipModel === 'amdGen4' ? 'premium' : 'basic');
-  }, [chipModel]);
+    const newTiers = chipModel === 'amdGen4' ? cloudServerPricing.amdGen4.tiers : cloudServerPricing.intelGen2.tiers;
+    if (!newTiers.includes(tier as any)) {
+      setTier(chipModel === 'amdGen4' ? 'premium' : 'basic');
+    }
+  }, [chipModel, tier, cloudServerPricing]);
 
   useEffect(() => {
-    if (chipModel === 'intelGen2' && billingMethod === 'subscription') {
-      const pricing = cloudServerPricing.intelGen2.subscription[tier as TierIntel];
-      if(pricing.cpu) setCpuIntel(pricing.cpu[0].cores);
-      if(pricing.ram) setRamIntel(pricing.ram[0].gb);
+    if (currentPricingTier?.cpu?.length > 0) {
+        const currentCpuIsValid = currentPricingTier.cpu.some((c: any) => c.cores === cpuCores);
+        if (!currentCpuIsValid) {
+            setCpuCores(currentPricingTier.cpu[0].cores);
+        }
     }
-     if (chipModel === 'intelGen2' && billingMethod === 'onDemand') {
-      const pricing = cloudServerPricing.intelGen2.onDemand[tier as TierIntel];
-      if(pricing.cpu) setCpuIntel(pricing.cpu[0].cores);
-      if(pricing.ram) setRamIntel(pricing.ram[0].gb);
+    if (currentPricingTier?.ram?.length > 0) {
+        const currentRamIsValid = currentPricingTier.ram.some((r: any) => r.gb === ramGb);
+        if (!currentRamIsValid) {
+            setRamGb(currentPricingTier.ram[0].gb);
+        }
     }
-  }, [chipModel, tier, billingMethod, cloudServerPricing]);
+  }, [currentPricingTier, cpuCores, ramGb]);
   
+  useEffect(() => {
+    if (!availableDiskTypes.includes(diskType)) {
+        if (availableDiskTypes.length > 0) {
+            const newDiskType = availableDiskTypes.includes('ssd') ? 'ssd' : availableDiskTypes[0];
+            setDiskType(newDiskType as DiskType);
+        }
+    }
+  }, [availableDiskTypes, diskType]);
+
   const { total, description, singlePrice } = useMemo(() => {
     let singleItemTotal = 0;
     
-    const cpuCoresAmdNum = parseInt(cpuCoresAmd, 10) || 1;
-    const ramGbAmdNum = parseInt(ramGbAmd, 10) || 1;
     const diskSizeNum = parseInt(diskSize, 10) || 10;
     const hoursNum = parseInt(hours, 10) || 1;
     const quantityNum = parseInt(quantity, 10) || 1;
+    
+    if (!currentPricingTier) {
+      return { total: 0, description: '', singlePrice: 0 };
+    }
 
     // --- Base Server Calculation Logic ---
     if (billingMethod === 'subscription') {
-      if (chipModel === 'amdGen4') {
-        const pricing = cloudServerPricing.amdGen4.subscription;
-        singleItemTotal += pricing.cpu[tier as TierAmd] * cpuCoresAmdNum;
-        singleItemTotal += pricing.ram[tier as TierAmd] * ramGbAmdNum;
-      } else { // Intel Gen 2
-        const pricing = cloudServerPricing.intelGen2.subscription[tier as TierIntel];
-        const cpuPrice = pricing.cpu?.find((c: any) => c.cores === cpuIntel)?.price || 0;
-        const ramPrice = pricing.ram?.find((r: any) => r.gb === ramIntel)?.price || 0;
-        singleItemTotal += cpuPrice;
-        singleItemTotal += ramPrice;
-      }
-      
-      const diskTier = chipModel === 'amdGen4' ? cloudServerPricing.amdGen4.disk.subscription : cloudServerPricing.intelGen2.subscription.disk;
-      const diskPricing = (diskTier as any)[diskType];
-      
-      if (diskSizeNum <= 100) {
-        singleItemTotal += diskPricing.under100GB * diskSizeNum;
-      } else {
-        singleItemTotal += (diskPricing.under100GB * 100) + (diskPricing.over100GB * (diskSizeNum - 100));
-      }
-
+      const cpuPrice = currentPricingTier.cpu?.find((c: any) => c.cores === cpuCores)?.price || 0;
+      const ramPrice = currentPricingTier.ram?.find((r: any) => r.gb === ramGb)?.price || 0;
+      singleItemTotal += cpuPrice;
+      singleItemTotal += ramPrice;
     } else { // On-Demand
       const effectiveHours = Math.min(hoursNum, 730);
-      if (chipModel === 'amdGen4') {
-        const pricing = cloudServerPricing.amdGen4.onDemand.on;
-        singleItemTotal += pricing.cpu[tier as TierAmd] * cpuCoresAmdNum * effectiveHours;
-        singleItemTotal += pricing.ram[tier as TierAmd] * ramGbAmdNum * effectiveHours;
-      } else { // Intel Gen 2
-        const pricing = cloudServerPricing.intelGen2.onDemand[tier as TierIntel];
-        const cpuPrice = pricing.cpu?.find((c: any) => c.cores === cpuIntel)?.on || 0;
-        const ramPrice = pricing.ram?.find((r: any) => r.gb === ramIntel)?.on || 0;
-        singleItemTotal += cpuPrice * effectiveHours;
-        singleItemTotal += ramPrice * effectiveHours;
-      }
-      
-      const diskTier = chipModel === 'amdGen4' ? cloudServerPricing.amdGen4.disk.onDemand : cloudServerPricing.intelGen2.onDemand.disk;
-      const diskPricing = (diskTier as any)[diskType];
-      
-      if (diskSizeNum <= 100) {
-          singleItemTotal += diskPricing.under100GB * diskSizeNum * effectiveHours;
-      } else {
-          singleItemTotal += ((diskPricing.under100GB * 100) + (diskPricing.over100GB * (diskSizeNum - 100))) * effectiveHours;
-      }
+      const cpuPrice = currentPricingTier.cpu?.find((c: any) => c.cores === cpuCores)?.on || 0;
+      const ramPrice = currentPricingTier.ram?.find((r: any) => r.gb === ramGb)?.on || 0;
+      singleItemTotal += cpuPrice * effectiveHours;
+      singleItemTotal += ramPrice * effectiveHours;
+    }
+
+    // --- Disk Calculation ---
+    const diskPricing = currentPricingTier.disk?.[diskType];
+    if (diskPricing) {
+        let diskCost = 0;
+        if (diskSizeNum <= 100) {
+            diskCost = diskPricing.under100GB * diskSizeNum;
+        } else {
+            diskCost = (diskPricing.under100GB * 100) + (diskPricing.over100GB * (diskSizeNum - 100));
+        }
+
+        if (billingMethod === 'onDemand') {
+            diskCost *= Math.min(hoursNum, 730);
+        }
+        singleItemTotal += diskCost;
     }
 
     // --- Description Generation ---
@@ -119,8 +122,8 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
         chip: chipModel === 'amdGen4' ? 'AMD Gen 4' : 'Intel Gen 2',
         tier,
         billing: t(`cloud_server.${billingMethod}`),
-        cpu: chipModel === 'amdGen4' ? cpuCoresAmdNum : cpuIntel,
-        ram: chipModel === 'amdGen4' ? ramGbAmdNum : ramIntel,
+        cpu: cpuCores,
+        ram: ramGb,
         diskSize: diskSizeNum,
         diskType: diskType.toUpperCase(),
         hours: hoursNum,
@@ -135,7 +138,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
       singlePrice: finalSinglePrice
     };
 
-  }, [chipModel, billingMethod, tier, cpuCoresAmd, ramGbAmd, cpuIntel, ramIntel, diskType, diskSize, hours, quantity, t, cloudServerPricing]);
+  }, [chipModel, billingMethod, tier, cpuCores, ramGb, diskType, diskSize, hours, quantity, t, currentPricingTier]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -204,45 +207,28 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div>
             <label htmlFor="tier" className="block text-sm font-medium text-gray-700">{t('cloud_server.tier')}</label>
-            <select id="tier" value={tier} onChange={e => setTier(e.target.value as any)} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md capitalize">
+            <select id="tier" value={tier} onChange={e => setTier(e.target.value as TierAmd | TierIntel)} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md capitalize">
               {tiersForModel.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
           
-          {chipModel === 'amdGen4' ? (
-            <>
-              <div>
-                <label htmlFor="cpu-cores-amd" className="block text-sm font-medium text-gray-700">{t('cloud_server.vcpu_cores')}</label>
-                <input type="number" id="cpu-cores-amd" value={cpuCoresAmd} onChange={e => setCpuCoresAmd(e.target.value)} onBlur={() => handleBlur(setCpuCoresAmd, cpuCoresAmd, 1)} min="1" className="mt-1 block w-full bg-white pl-3 pr-2 py-2 text-base text-gray-900 border-black rounded-md" />
-              </div>
-              <div>
-                <label htmlFor="ram-gb-amd" className="block text-sm font-medium text-gray-700">{t('cloud_server.ram_gb')}</label>
-                <input type="number" id="ram-gb-amd" value={ramGbAmd} onChange={e => setRamGbAmd(e.target.value)} onBlur={() => handleBlur(setRamGbAmd, ramGbAmd, 1)} min="1" className="mt-1 block w-full bg-white pl-3 pr-2 py-2 text-base text-gray-900 border-black rounded-md" />
-              </div>
-            </>
-          ) : (
-            <>
-              <div>
-                <label htmlFor="cpu-intel" className="block text-sm font-medium text-gray-700">{t('cloud_server.vcpu')}</label>
-                <select id="cpu-intel" value={cpuIntel} onChange={e => setCpuIntel(Number(e.target.value))} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black rounded-md">
-                   {(cloudServerPricing.intelGen2[billingMethod][tier as TierIntel] as any).cpu?.map((c: {cores: number}) => <option key={c.cores} value={c.cores}>{c.cores} vCPU</option>)}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="ram-intel" className="block text-sm font-medium text-gray-700">{t('cloud_server.ram')}</label>
-                <select id="ram-intel" value={ramIntel} onChange={e => setRamIntel(Number(e.target.value))} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black rounded-md">
-                  {(cloudServerPricing.intelGen2[billingMethod][tier as TierIntel] as any).ram?.map((r: {gb: number}) => <option key={r.gb} value={r.gb}>{r.gb} GB</option>)}
-                </select>
-              </div>
-            </>
-          )}
+          <div>
+            <label htmlFor="cpu-cores" className="block text-sm font-medium text-gray-700">{t('cloud_server.vcpu')}</label>
+            <select id="cpu-cores" value={cpuCores} onChange={e => setCpuCores(Number(e.target.value))} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black rounded-md">
+               {currentPricingTier?.cpu?.map((c: {cores: number}) => <option key={c.cores} value={c.cores}>{c.cores} vCPU</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="ram-gb" className="block text-sm font-medium text-gray-700">{t('cloud_server.ram')}</label>
+            <select id="ram-gb" value={ramGb} onChange={e => setRamGb(Number(e.target.value))} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black rounded-md">
+              {currentPricingTier?.ram?.map((r: {gb: number}) => <option key={r.gb} value={r.gb}>{r.gb} GB</option>)}
+            </select>
+          </div>
 
           <div>
              <label htmlFor="disk-type" className="block text-sm font-medium text-gray-700">{t('cloud_server.disk_type')}</label>
              <select id="disk-type" value={diskType} onChange={e => setDiskType(e.target.value as DiskType)} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                <option value="hdd">HDD</option>
-                <option value="ssd">SSD</option>
-                <option value="nvme">NVMe</option>
+                {availableDiskTypes.map(dt => <option key={dt} value={dt}>{dt.toUpperCase()}</option>)}
              </select>
           </div>
            <div>
