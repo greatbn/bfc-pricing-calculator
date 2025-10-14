@@ -33,7 +33,6 @@ import businessEmailIcon from './assets/icons/icon-business-email.svg';
 import emailTransactionIcon from './assets/icons/icon-email-transaction.svg';
 import lmsIcon from './assets/icons/icon-lms.svg';
 import backupScheduleIcon from './assets/icons/icon-cloud-backup.svg';
-import aiAssistantIcon from './assets/icons/icon-ai-assistant.svg';
 
 
 export type Page = 'calculator' | 'aiEstimate';
@@ -55,10 +54,9 @@ const serviceIcons: Record<ServiceId, React.ReactNode> = {
   Snapshot: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
   BackupSchedule: <img src={backupScheduleIcon} alt="Backup Schedule" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   CustomImage: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
-  AI: <img src={aiAssistantIcon} alt="AI Generated" className="h-8 w-8 mx-auto mb-2 object-contain" />,
 };
 const serviceIds: ServiceId[] = [
-    'CloudServer', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage', 'AI'
+    'CloudServer', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
 ];
 
 const App: React.FC = () => {
@@ -168,12 +166,12 @@ const App: React.FC = () => {
                               key={service.id}
                               onClick={() => handleServiceClick(service.id)}
                               className={`p-4 rounded-lg text-center transition-all duration-200 ease-in-out transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 cta-bfc-pc-${service.id.toLowerCase()} ${
-                                  activeService === service.id && service.id !== 'AI'
+                                  activeService === service.id
                                   ? 'bg-blue-700 text-white shadow-md' 
                                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                               }`}
                           >
-                              <div className={`transition-colors duration-200 ${activeService === service.id && service.id !== 'AI' ? 'text-white' : 'text-blue-700'}`}>
+                              <div className={`transition-colors duration-200 ${activeService === service.id ? 'text-white' : 'text-blue-700'}`}>
                                   {service.icon}
                               </div>
                               <span className="text-sm font-semibold block">{service.name}</span>

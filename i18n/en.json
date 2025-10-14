@@ -19,8 +19,7 @@
     "WanIp": "WAN IP",
     "Snapshot": "Snapshot",
     "BackupSchedule": "Backup Schedule",
-    "CustomImage": "Custom Image",
-    "AI": "AI Generated"
+    "CustomImage": "Custom Image"
   },
   "summary": {
     "title": "Cost Estimate",

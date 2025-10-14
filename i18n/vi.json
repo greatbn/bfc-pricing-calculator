@@ -19,8 +19,7 @@
     "WanIp": "WAN IP",
     "Snapshot": "Snapshot",
     "BackupSchedule": "Backup Schedule",
-    "CustomImage": "Custom Image",
-    "AI": "Tạo bởi AI"
+    "CustomImage": "Custom Image"
   },
   "summary": {
     "title": "Bảng dự toán chi phí",
