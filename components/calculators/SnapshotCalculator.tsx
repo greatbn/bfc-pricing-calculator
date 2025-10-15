@@ -17,16 +17,16 @@ const SnapshotCalculator: React.FC<SnapshotCalculatorProps> = ({ onAddItem }) =>
   const [size, setSize] = useState('50');
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionOptions } = useMemo(() => {
     const sizeNum = parseInt(size, 10) || 1;
     const quantityNum = parseInt(quantity, 10) || 1;
     const price = sizeNum * snapshotPricing.pricePerGB;
     return { 
       total: price * quantityNum, 
-      description: t('snapshot.desc', { size: sizeNum }),
-      singlePrice: price
+      singlePrice: price,
+      descriptionOptions: { size: sizeNum }
     };
-  }, [size, quantity, t, snapshotPricing]);
+  }, [size, quantity, snapshotPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -34,7 +34,8 @@ const SnapshotCalculator: React.FC<SnapshotCalculatorProps> = ({ onAddItem }) =>
       onAddItem({
         id: `snapshot-${Date.now()}`,
         service: t('services.Snapshot'),
-        description,
+        descriptionKey: 'snapshot.desc',
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

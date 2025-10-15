@@ -18,7 +18,7 @@ const VpnCalculator: React.FC<VpnCalculatorProps> = ({ onAddItem }) => {
   const [dataTransfer, setDataTransfer] = useState('0');
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let singleItemTotal = 0;
     const dataTransferNum = parseInt(dataTransfer, 10) || 0;
     const quantityNum = parseInt(quantity, 10) || 1;
@@ -40,10 +40,11 @@ const VpnCalculator: React.FC<VpnCalculatorProps> = ({ onAddItem }) => {
     
     return { 
       total: singleItemTotal * quantityNum, 
-      description: t(descKey, descOptions),
-      singlePrice: singleItemTotal
+      singlePrice: singleItemTotal,
+      descriptionKey: descKey,
+      descriptionOptions: descOptions
     };
-  }, [selectedPackageName, dataTransfer, quantity, t, vpnPricing]);
+  }, [selectedPackageName, dataTransfer, quantity, vpnPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -51,7 +52,8 @@ const VpnCalculator: React.FC<VpnCalculatorProps> = ({ onAddItem }) => {
       onAddItem({
         id: `vpn-${Date.now()}`,
         service: t('services.Vpn'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

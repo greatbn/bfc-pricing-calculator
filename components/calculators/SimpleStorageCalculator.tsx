@@ -28,7 +28,7 @@ const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAdd
     setSubscriptionPackage(currentPackages[0].gb);
   }, [storageType, simpleStoragePricing]);
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let storageCost = 0;
     let storageDisplayAmount = 0;
 
@@ -52,18 +52,19 @@ const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAdd
     const singleItemTotal = Math.round(storageCost + transferCost);
 
     const descOptions = {
-        type: t(`simple_storage.${storageType}`),
-        billing: t(`simple_storage.${billingModel === 'subscription' ? 'subscription' : 'payg'}`),
+        type: storageType,
+        billing: billingModel,
         storage: storageDisplayAmount,
         transfer: dataTransferNum
     };
 
     return { 
         total: singleItemTotal * quantityNum, 
-        description: t('simple_storage.desc', descOptions),
-        singlePrice: singleItemTotal
+        singlePrice: singleItemTotal,
+        descriptionKey: 'simple_storage.desc',
+        descriptionOptions: descOptions
     };
-  }, [storageType, billingModel, storageAmount, subscriptionPackage, dataTransfer, quantity, availablePackages, t, simpleStoragePricing]);
+  }, [storageType, billingModel, storageAmount, subscriptionPackage, dataTransfer, quantity, availablePackages, simpleStoragePricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -71,7 +72,8 @@ const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAdd
       onAddItem({
         id: `ss-${Date.now()}`,
         service: t('services.SimpleStorage'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

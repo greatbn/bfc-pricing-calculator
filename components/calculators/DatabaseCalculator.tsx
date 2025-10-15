@@ -33,7 +33,7 @@ const DatabaseCalculator: React.FC<DatabaseCalculatorProps> = ({ onAddItem }) =>
     setRamGB(currentRams[0].gb);
   }, [tier, databasePricing]);
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let singleItemTotal = 0;
     const { hoursPerMonth } = databasePricing;
     
@@ -76,10 +76,11 @@ const DatabaseCalculator: React.FC<DatabaseCalculatorProps> = ({ onAddItem }) =>
 
     return { 
       total: finalSinglePrice * quantityNum, 
-      description: t(descKey, descOptions),
-      singlePrice: finalSinglePrice
+      singlePrice: finalSinglePrice,
+      descriptionKey: descKey,
+      descriptionOptions: descOptions
     };
-  }, [tier, cpuCores, ramGB, diskSize, backupSize, quantity, availableCpus, availableRams, t, databasePricing]);
+  }, [tier, cpuCores, ramGB, diskSize, backupSize, quantity, availableCpus, availableRams, databasePricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -87,7 +88,8 @@ const DatabaseCalculator: React.FC<DatabaseCalculatorProps> = ({ onAddItem }) =>
       onAddItem({
         id: `db-${Date.now()}`,
         service: t('services.Database'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

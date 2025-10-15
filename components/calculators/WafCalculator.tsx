@@ -18,7 +18,7 @@ const WafCalculator: React.FC<WafCalculatorProps> = ({ onAddItem }) => {
   const [dataTransfer, setDataTransfer] = useState('100'); // in GB
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionOptions } = useMemo(() => {
     const requestsNum = parseInt(requests, 10) || 0;
     const dataTransferNum = parseInt(dataTransfer, 10) || 0;
     const quantityNum = parseInt(quantity, 10) || 1;
@@ -27,17 +27,17 @@ const WafCalculator: React.FC<WafCalculatorProps> = ({ onAddItem }) => {
     price += requestsNum * wafPricing.requestsMillion;
     price += dataTransferNum * wafPricing.dataTransferOutboundGB;
     
-    const desc = t('waf.desc', { 
+    const descOptions = { 
         requests: requestsNum, 
         transfer: dataTransferNum 
-    });
+    };
 
     return {
       total: price * quantityNum,
-      description: desc,
       singlePrice: price,
+      descriptionOptions: descOptions,
     };
-  }, [requests, dataTransfer, quantity, t, wafPricing]);
+  }, [requests, dataTransfer, quantity, wafPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -45,7 +45,8 @@ const WafCalculator: React.FC<WafCalculatorProps> = ({ onAddItem }) => {
       onAddItem({
         id: `waf-${Date.now()}`,
         service: t('services.WAF'),
-        description,
+        descriptionKey: 'waf.desc',
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

@@ -16,24 +16,25 @@ const BusinessEmailCalculator: React.FC<BusinessEmailCalculatorProps> = ({ onAdd
   const [selectedPackageId, setSelectedPackageId] = useState(businessEmailPricing.packages[0].id);
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     const selectedPackage = businessEmailPricing.packages.find((p: any) => p.id === selectedPackageId);
-    if (!selectedPackage) return { total: 0, description: '', singlePrice: 0 };
+    if (!selectedPackage) return { total: 0, singlePrice: 0, descriptionKey: '', descriptionOptions: {} };
 
     const price = selectedPackage.price;
-    const desc = t('business_email.desc', {
+    const descOptions = {
         id: selectedPackage.id,
         storageGB: selectedPackage.storageGB,
         emailsPerDay: selectedPackage.emailsPerDay.toLocaleString(numberLocale)
-    });
+    };
     const quantityNum = parseInt(quantity, 10) || 1;
     
     return { 
       total: price * quantityNum, 
-      description: desc,
-      singlePrice: price
+      singlePrice: price,
+      descriptionKey: 'business_email.desc',
+      descriptionOptions: descOptions
     };
-  }, [selectedPackageId, quantity, t, numberLocale, businessEmailPricing]);
+  }, [selectedPackageId, quantity, numberLocale, businessEmailPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -41,7 +42,8 @@ const BusinessEmailCalculator: React.FC<BusinessEmailCalculatorProps> = ({ onAdd
       onAddItem({
         id: `bemail-${Date.now()}`,
         service: t('services.BusinessEmail'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

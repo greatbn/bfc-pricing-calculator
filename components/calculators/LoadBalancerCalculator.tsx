@@ -18,7 +18,7 @@ const LoadBalancerCalculator: React.FC<LoadBalancerCalculatorProps> = ({ onAddIt
   const [dataOverage, setDataOverage] = useState('0');
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let singleItemTotal = 0;
     const dataOverageNum = parseInt(dataOverage, 10) || 0;
     const quantityNum = parseInt(quantity, 10) || 1;
@@ -42,10 +42,11 @@ const LoadBalancerCalculator: React.FC<LoadBalancerCalculatorProps> = ({ onAddIt
     
     return { 
       total: singleItemTotal * quantityNum, 
-      description: t(descKey, descOptions),
-      singlePrice: singleItemTotal
+      singlePrice: singleItemTotal,
+      descriptionKey: descKey,
+      descriptionOptions: descOptions
     };
-  }, [selectedPackage, dataOverage, quantity, t, numberLocale, loadBalancerPricing]);
+  }, [selectedPackage, dataOverage, quantity, numberLocale, loadBalancerPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -53,7 +54,8 @@ const LoadBalancerCalculator: React.FC<LoadBalancerCalculatorProps> = ({ onAddIt
       onAddItem({
         id: `lb-${Date.now()}`,
         service: t('services.LoadBalancer'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

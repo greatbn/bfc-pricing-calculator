@@ -22,12 +22,12 @@ const KafkaCalculator: React.FC<KafkaCalculatorProps> = ({ onAddItem }) => {
   const [hasWanIp, setHasWanIp] = useState(true);
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let singleItemTotal = 0;
     
     const selectedPackage = kafkaPricing.packages[selectedPackageIndex];
      if (!selectedPackage) {
-        return { total: 0, description: '', singlePrice: 0 };
+        return { total: 0, singlePrice: 0, descriptionKey: '', descriptionOptions: {} };
     }
 
     const diskSizeNum = parseInt(diskSize, 10) || 10;
@@ -54,10 +54,11 @@ const KafkaCalculator: React.FC<KafkaCalculatorProps> = ({ onAddItem }) => {
 
     return { 
       total: singleItemTotal * quantityNum, 
-      description: t(descKey, descOptions),
-      singlePrice: singleItemTotal
+      singlePrice: singleItemTotal,
+      descriptionKey: descKey,
+      descriptionOptions: descOptions
     };
-  }, [tier, selectedPackageIndex, diskSize, hasWanIp, quantity, t, kafkaPricing]);
+  }, [tier, selectedPackageIndex, diskSize, hasWanIp, quantity, kafkaPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -65,7 +66,8 @@ const KafkaCalculator: React.FC<KafkaCalculatorProps> = ({ onAddItem }) => {
       onAddItem({
         id: `kafka-${Date.now()}`,
         service: t('services.Kafka'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

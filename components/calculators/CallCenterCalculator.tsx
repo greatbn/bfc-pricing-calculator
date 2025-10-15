@@ -16,23 +16,23 @@ const CallCenterCalculator: React.FC<CallCenterCalculatorProps> = ({ onAddItem }
   const [selectedPackageName, setSelectedPackageName] = useState(callCenterPricing.packages[0].name);
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, descriptionKey, descriptionOptions, singlePrice } = useMemo(() => {
     const selectedPackage = callCenterPricing.packages.find((p: any) => p.name === selectedPackageName);
     
     if (!selectedPackage) {
-      return { total: 0, description: '', singlePrice: 0 };
+      return { total: 0, descriptionKey: '', descriptionOptions: {}, singlePrice: 0 };
     }
     
     const price = selectedPackage.price;
-    const desc = t('call_center.desc', { name: selectedPackage.name, details: selectedPackage.details });
     const quantityNum = parseInt(quantity, 10) || 1;
 
     return { 
       total: price * quantityNum, 
-      description: desc,
+      descriptionKey: 'call_center.desc',
+      descriptionOptions: { name: selectedPackage.name, details: selectedPackage.details },
       singlePrice: price
     };
-  }, [selectedPackageName, quantity, t, callCenterPricing]);
+  }, [selectedPackageName, quantity, callCenterPricing]);
 
   const handleAdd = () => {
     const quantityNum = parseInt(quantity, 10) || 1;
@@ -40,7 +40,8 @@ const CallCenterCalculator: React.FC<CallCenterCalculatorProps> = ({ onAddItem }
       onAddItem({
         id: `cc-${Date.now()}`,
         service: t('services.CallCenter'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

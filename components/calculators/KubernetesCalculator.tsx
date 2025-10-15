@@ -26,38 +26,43 @@ const KubernetesCalculator: React.FC<KubernetesCalculatorProps> = ({ onAddItem }
     }
   }, [planType, kubernetesPricing]);
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let price = 0;
-    let desc = '';
+    let descKey = '';
+    let descOptions: Record<string, string|number> = {};
     const quantityNum = parseInt(quantity, 10) || 1;
 
     if (planType === 'standard') {
       const pkg = kubernetesPricing.standard.find((p: any) => p.name === selectedPackage);
       if (pkg) {
         price = pkg.price;
-        desc = t('kubernetes.desc_standard', { name: pkg.name });
+        descKey = 'kubernetes.desc_standard';
+        descOptions = { name: pkg.name };
       }
     } else {
       const pkg = kubernetesPricing.everywhere.find((p: any) => p.name === selectedPackage);
       if (pkg) {
         price = pkg.price;
-        desc = t('kubernetes.desc_everywhere', { name: pkg.name, nodes: pkg.maxNodes });
+        descKey = 'kubernetes.desc_everywhere';
+        descOptions = { name: pkg.name, nodes: pkg.maxNodes };
       }
     }
 
     return { 
       total: price * quantityNum, 
-      description: desc,
-      singlePrice: price
+      singlePrice: price,
+      descriptionKey: descKey,
+      descriptionOptions: descOptions,
     };
-  }, [planType, selectedPackage, quantity, t, kubernetesPricing]);
+  }, [planType, selectedPackage, quantity, kubernetesPricing]);
 
   const handleAdd = () => {
     const quantityNum = parseInt(quantity, 10) || 1;
     onAddItem({
       id: `k8s-${Date.now()}`,
       service: t('services.Kubernetes'),
-      description,
+      descriptionKey,
+      descriptionOptions,
       price: singlePrice,
       quantity: quantityNum,
     });

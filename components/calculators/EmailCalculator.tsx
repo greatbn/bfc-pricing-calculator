@@ -25,29 +25,33 @@ const EmailCalculator: React.FC<EmailCalculatorProps> = ({ onAddItem }) => {
     }
   }, [planType, emailPricing]);
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let price = 0;
-    let desc = '';
+    let descKey = '';
+    let descOptions: Record<string, string|number> = {};
     const emailsPerMonthNum = parseInt(emailsPerMonth, 10) || 0;
     const quantityNum = parseInt(quantity, 10) || 1;
 
     if (planType === 'shared') {
       price = emailsPerMonthNum * emailPricing.shared.pricePerEmail;
-      desc = t('email.desc_shared', { emails: emailsPerMonthNum.toLocaleString(numberLocale) });
+      descKey = 'email.desc_shared';
+      descOptions = { emails: emailsPerMonthNum.toLocaleString(numberLocale) };
     } else {
       const selectedPlan = emailPricing.dedicated.find((p: any) => p.name === dedicatedPlan);
       if (selectedPlan) {
         price = selectedPlan.price;
-        desc = t('email.desc_dedicated', { name: selectedPlan.name, emails: (selectedPlan.emailsPerDay * 30).toLocaleString(numberLocale) });
+        descKey = 'email.desc_dedicated';
+        descOptions = { name: selectedPlan.name, emails: (selectedPlan.emailsPerDay * 30).toLocaleString(numberLocale) };
       }
     }
     
     return { 
       total: price * quantityNum, 
-      description: desc,
-      singlePrice: price
+      singlePrice: price,
+      descriptionKey: descKey,
+      descriptionOptions: descOptions,
     };
-  }, [planType, emailsPerMonth, dedicatedPlan, quantity, t, numberLocale, emailPricing]);
+  }, [planType, emailsPerMonth, dedicatedPlan, quantity, numberLocale, emailPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -55,7 +59,8 @@ const EmailCalculator: React.FC<EmailCalculatorProps> = ({ onAddItem }) => {
       onAddItem({
         id: `email-${Date.now()}`,
         service: t('services.EmailTransaction'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

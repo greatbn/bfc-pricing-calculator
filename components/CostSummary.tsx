@@ -1,8 +1,43 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import type { EstimateItem } from '../types';
 import { exportEstimateToPDF } from '../services/pdfService';
 import { exportEstimateToCSV } from '../services/csvService';
 import { useLanguage } from '../i18n/LanguageContext';
+
+function getRenderedDescription(
+  item: EstimateItem, 
+  t: (key: string, options?: Record<string, string | number>) => string
+): string {
+    const options = { ...item.descriptionOptions };
+
+    switch (item.descriptionKey) {
+        case 'cloud_server.desc':
+        case 'cloud_server.desc_hours':
+            options.billing = t(`cloud_server.${options.billing}`);
+            break;
+        
+        case 'simple_storage.desc':
+            options.type = t(`simple_storage.${options.type}`);
+            options.billing = t(`simple_storage.${options.billing}`);
+            break;
+        
+        case 'block_storage.desc':
+        case 'block_storage.desc_hours':
+            options.billing = t(`block_storage.${options.billing}`);
+            break;
+
+        case 'kafka.desc':
+        case 'kafka.desc_wan':
+            options.tier = t(`kafka.${options.tier}`);
+            break;
+        
+        default:
+            break;
+    }
+
+    return t(item.descriptionKey, options);
+}
+
 
 interface CostSummaryProps {
   items: EstimateItem[];
@@ -15,7 +50,7 @@ interface CostSummaryProps {
 }
 
 const CostSummary: React.FC<CostSummaryProps> = ({ items, onRemoveItem, onClearAll, billingCycle, onBillingCycleChange, discount, onDiscountChange }) => {
-  const { language, t } = useLanguage();
+  const { language, t, translations } = useLanguage();
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
   const [discountInput, setDiscountInput] = useState(String(discount));
 
@@ -45,9 +80,31 @@ const CostSummary: React.FC<CostSummaryProps> = ({ items, onRemoveItem, onClearA
     onDiscountChange(value);
   };
 
+  const getEnglishT = useCallback((key: string, options?: Record<string, string | number>): string => {
+    if (!translations) {
+      return key;
+    }
+    const keys = key.split('.');
+    let result = translations.en;
+    for (const k of keys) {
+      result = result?.[k];
+      if (result === undefined) {
+        return key;
+      }
+    }
+    
+    if (typeof result === 'string' && options) {
+      return Object.entries(options).reduce((acc, [optKey, optValue]) => {
+        return acc.replace(`{${optKey}}`, String(optValue));
+      }, result);
+    }
+
+    return result || key;
+  }, [translations]);
+
   const handleExportPDF = () => {
     try {
-      exportEstimateToPDF(items, subtotal, vat, grandTotal, billingCycle, language, t, discount, discountAmount);
+      exportEstimateToPDF(items, subtotal, vat, grandTotal, billingCycle, 'en', getEnglishT, discount, discountAmount);
     } catch (error) {
       console.error("Failed to generate PDF:", error);
       alert(t('summary.error_pdf'));
@@ -56,7 +113,7 @@ const CostSummary: React.FC<CostSummaryProps> = ({ items, onRemoveItem, onClearA
   
   const handleExportCSV = () => {
     try {
-      exportEstimateToCSV(items, subtotal, vat, grandTotal, billingCycle, language, t, discount, discountAmount);
+      exportEstimateToCSV(items, subtotal, vat, grandTotal, billingCycle, 'en', getEnglishT, discount, discountAmount);
     } catch (error) {
       console.error("Failed to generate CSV:", error);
       alert(t('summary.error_csv'));
@@ -120,7 +177,7 @@ const CostSummary: React.FC<CostSummaryProps> = ({ items, onRemoveItem, onClearA
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-semibold text-gray-700 text-sm">{item.service}</p>
-                      <p className="text-gray-600 text-xs">{item.description}</p>
+                      <p className="text-gray-600 text-xs">{getRenderedDescription(item, t)}</p>
                       <p className="text-blue-700 font-bold text-sm mt-1">
                         {item.quantity} x {item.price.toLocaleString(numberLocale)} VNĐ
                       </p>

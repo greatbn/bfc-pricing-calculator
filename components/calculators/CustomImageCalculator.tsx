@@ -17,16 +17,16 @@ const CustomImageCalculator: React.FC<CustomImageCalculatorProps> = ({ onAddItem
   const [size, setSize] = useState('20');
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionOptions } = useMemo(() => {
     const sizeNum = parseInt(size, 10) || 1;
     const quantityNum = parseInt(quantity, 10) || 1;
     const price = sizeNum * customImagePricing.pricePerGB;
     return { 
       total: price * quantityNum, 
-      description: t('custom_image.desc', { size: sizeNum }),
-      singlePrice: price
+      singlePrice: price,
+      descriptionOptions: { size: sizeNum }
     };
-  }, [size, quantity, t, customImagePricing]);
+  }, [size, quantity, customImagePricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -34,7 +34,8 @@ const CustomImageCalculator: React.FC<CustomImageCalculatorProps> = ({ onAddItem
       onAddItem({
         id: `customimg-${Date.now()}`,
         service: t('services.CustomImage'),
-        description,
+        descriptionKey: 'custom_image.desc',
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

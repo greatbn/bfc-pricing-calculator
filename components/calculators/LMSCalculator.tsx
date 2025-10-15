@@ -18,9 +18,9 @@ const LMSCalculator: React.FC<LMSCalculatorProps> = ({ onAddItem }) => {
   const [additionalStorageGB, setAdditionalStorageGB] = useState('0');
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     const selectedPackage = lmsPricing.packages.find((p: any) => p.name === selectedPackageName);
-    if (!selectedPackage) return { total: 0, description: '', singlePrice: 0 };
+    if (!selectedPackage) return { total: 0, singlePrice: 0, descriptionKey: '', descriptionOptions: {} };
 
     let singleItemTotal = selectedPackage.price;
     const additionalStorageGBNum = parseInt(additionalStorageGB, 10) || 0;
@@ -43,10 +43,11 @@ const LMSCalculator: React.FC<LMSCalculatorProps> = ({ onAddItem }) => {
 
     return { 
       total: singleItemTotal * quantityNum, 
-      description: t(descKey, descOptions),
-      singlePrice: singleItemTotal
+      singlePrice: singleItemTotal,
+      descriptionKey: descKey,
+      descriptionOptions: descOptions
     };
-  }, [selectedPackageName, additionalStorageGB, quantity, t, lmsPricing]);
+  }, [selectedPackageName, additionalStorageGB, quantity, lmsPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -54,7 +55,8 @@ const LMSCalculator: React.FC<LMSCalculatorProps> = ({ onAddItem }) => {
       onAddItem({
         id: `lms-${Date.now()}`,
         service: t('services.LMS'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

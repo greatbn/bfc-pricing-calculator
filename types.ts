@@ -3,7 +3,8 @@ import type { ReactNode } from 'react';
 export interface EstimateItem {
   id: string;
   service: string;
-  description: string;
+  descriptionKey: string;
+  descriptionOptions: Record<string, string | number>;
   price: number;
   quantity: number;
 }

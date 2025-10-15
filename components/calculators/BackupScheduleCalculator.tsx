@@ -15,22 +15,22 @@ const BackupScheduleCalculator: React.FC<BackupScheduleCalculatorProps> = ({ onA
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice } = useMemo(() => {
     const price = backupSchedulePricing.price;
     const quantityNum = parseInt(quantity, 10) || 1;
     return { 
       total: price * quantityNum, 
-      description: t('backup_schedule.desc'),
       singlePrice: price
     };
-  }, [t, quantity, backupSchedulePricing]);
+  }, [quantity, backupSchedulePricing]);
 
   const handleAdd = () => {
     const quantityNum = parseInt(quantity, 10) || 1;
     onAddItem({
       id: `backupschedule-${Date.now()}`,
       service: t('services.BackupSchedule'),
-      description,
+      descriptionKey: 'backup_schedule.desc',
+      descriptionOptions: {},
       price: singlePrice,
       quantity: quantityNum,
     });

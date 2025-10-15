@@ -8,6 +8,40 @@ function escapeCsvCell(cell: string | number): string {
   return cellStr;
 }
 
+function getRenderedDescription(
+  item: EstimateItem, 
+  t: (key: string, options?: Record<string, string | number>) => string
+): string {
+    const options = { ...item.descriptionOptions };
+
+    switch (item.descriptionKey) {
+        case 'cloud_server.desc':
+        case 'cloud_server.desc_hours':
+            options.billing = t(`cloud_server.${options.billing}`);
+            break;
+        
+        case 'simple_storage.desc':
+            options.type = t(`simple_storage.${options.type}`);
+            options.billing = t(`simple_storage.${options.billing}`);
+            break;
+        
+        case 'block_storage.desc':
+        case 'block_storage.desc_hours':
+            options.billing = t(`block_storage.${options.billing}`);
+            break;
+
+        case 'kafka.desc':
+        case 'kafka.desc_wan':
+            options.tier = t(`kafka.${options.tier}`);
+            break;
+        
+        default:
+            break;
+    }
+
+    return t(item.descriptionKey, options);
+}
+
 export function exportEstimateToCSV(
   items: EstimateItem[],
   subtotal: number,
@@ -38,7 +72,7 @@ export function exportEstimateToCSV(
   items.forEach(item => {
     rows.push([
       escapeCsvCell(item.service),
-      escapeCsvCell(item.description),
+      escapeCsvCell(getRenderedDescription(item, t)),
       escapeCsvCell(item.quantity),
       escapeCsvCell(item.price.toLocaleString(numberLocale)),
       escapeCsvCell((item.price * item.quantity * billingCycle).toLocaleString(numberLocale)),

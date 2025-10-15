@@ -23,7 +23,7 @@ const BlockStorageCalculator: React.FC<BlockStorageCalculatorProps> = ({ onAddIt
   const [hours, setHours] = useState('730');
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let singleItemTotal = 0;
     
     const pricingSource = blockStoragePricing; 
@@ -50,7 +50,7 @@ const BlockStorageCalculator: React.FC<BlockStorageCalculatorProps> = ({ onAddIt
     
     const descKey = billingMethod === 'subscription' ? 'block_storage.desc' : 'block_storage.desc_hours';
     const descOptions = {
-        billing: t(`block_storage.${billingMethod}`),
+        billing: billingMethod,
         diskSize: diskSizeNum,
         diskType: diskType.toUpperCase(),
         hours: hoursNum
@@ -60,10 +60,11 @@ const BlockStorageCalculator: React.FC<BlockStorageCalculatorProps> = ({ onAddIt
 
     return { 
       total: finalPrice * quantityNum, 
-      description: t(descKey, descOptions),
-      singlePrice: finalPrice
+      singlePrice: finalPrice,
+      descriptionKey: descKey,
+      descriptionOptions: descOptions
     };
-  }, [billingMethod, diskType, diskSize, hours, quantity, t, blockStoragePricing]);
+  }, [billingMethod, diskType, diskSize, hours, quantity, blockStoragePricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -71,7 +72,8 @@ const BlockStorageCalculator: React.FC<BlockStorageCalculatorProps> = ({ onAddIt
       onAddItem({
         id: `bs-${Date.now()}`,
         service: t('services.BlockStorage'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

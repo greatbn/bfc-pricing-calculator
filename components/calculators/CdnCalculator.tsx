@@ -17,7 +17,7 @@ const CdnCalculator: React.FC<CdnCalculatorProps> = ({ onAddItem }) => {
   const [dataTransfer, setDataTransfer] = useState('200');
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice, currentTierPrice } = useMemo(() => {
+  const { total, singlePrice, currentTierPrice, descriptionOptions } = useMemo(() => {
     const dataTransferNum = parseInt(dataTransfer, 10) || 0;
     const effectiveDataTransfer = Math.max(dataTransferNum, cdnPricing.minGB);
 
@@ -33,16 +33,14 @@ const CdnCalculator: React.FC<CdnCalculatorProps> = ({ onAddItem }) => {
     const singleItemTotal = Math.max(calculatedPrice, cdnPricing.minPrice);
 
     const quantityNum = parseInt(quantity, 10) || 1;
-
-    const desc = t('cdn.desc', { transfer: dataTransferNum });
     
     return { 
       total: singleItemTotal * quantityNum, 
-      description: desc,
       singlePrice: singleItemTotal,
-      currentTierPrice: pricePerGB
+      currentTierPrice: pricePerGB,
+      descriptionOptions: { transfer: dataTransferNum }
     };
-  }, [dataTransfer, quantity, t, cdnPricing]);
+  }, [dataTransfer, quantity, cdnPricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -50,7 +48,8 @@ const CdnCalculator: React.FC<CdnCalculatorProps> = ({ onAddItem }) => {
       onAddItem({
         id: `cdn-${Date.now()}`,
         service: t('services.CDN'),
-        description,
+        descriptionKey: 'cdn.desc',
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

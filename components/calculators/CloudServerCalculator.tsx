@@ -75,7 +75,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
     }
   }, [availableDiskTypes, diskType]);
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let singleItemTotal = 0;
     
     const diskSizeNum = parseInt(diskSize, 10) || 10;
@@ -83,7 +83,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
     const quantityNum = parseInt(quantity, 10) || 1;
     
     if (!currentPricingTier) {
-      return { total: 0, description: '', singlePrice: 0 };
+      return { total: 0, singlePrice: 0, descriptionKey: '', descriptionOptions: {} };
     }
 
     // --- Base Server Calculation Logic ---
@@ -116,12 +116,11 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
         singleItemTotal += diskCost;
     }
 
-    // --- Description Generation ---
     const descKey = billingMethod === 'subscription' ? 'cloud_server.desc' : 'cloud_server.desc_hours';
     const descOptions = {
         chip: chipModel === 'amdGen4' ? 'AMD Gen 4' : 'Intel Gen 2',
         tier,
-        billing: t(`cloud_server.${billingMethod}`),
+        billing: billingMethod,
         cpu: cpuCores,
         ram: ramGb,
         diskSize: diskSizeNum,
@@ -129,13 +128,13 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
         hours: hoursNum,
     };
     
-    const finalDescription = t(descKey, descOptions);
     const finalSinglePrice = Math.round(singleItemTotal);
 
     return { 
       total: finalSinglePrice * quantityNum, 
-      description: finalDescription,
-      singlePrice: finalSinglePrice
+      singlePrice: finalSinglePrice,
+      descriptionKey: descKey,
+      descriptionOptions: descOptions
     };
 
   }, [chipModel, billingMethod, tier, cpuCores, ramGb, diskType, diskSize, hours, quantity, t, currentPricingTier]);
@@ -146,7 +145,8 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
       onAddItem({
         id: `cs-${Date.now()}`,
         service: t('services.CloudServer'),
-        description,
+        descriptionKey,
+        descriptionOptions,
         price: singlePrice,
         quantity: quantityNum,
       });

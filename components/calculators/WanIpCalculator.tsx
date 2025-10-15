@@ -19,23 +19,24 @@ const WanIpCalculator: React.FC<WanIpCalculatorProps> = ({ onAddItem }) => {
   const [billingMethod, setBillingMethod] = useState<BillingMethod>('subscription');
   const [quantity, setQuantity] = useState('1');
 
-  const { total, description, singlePrice } = useMemo(() => {
+  const { total, singlePrice, descriptionKey } = useMemo(() => {
     const price = wanIpPricing[billingMethod];
     const descKey = `wan_ip.desc_${billingMethod}`;
     const quantityNum = parseInt(quantity, 10) || 1;
     return { 
       total: price * quantityNum, 
-      description: t(descKey),
-      singlePrice: price
+      singlePrice: price,
+      descriptionKey: descKey,
     };
-  }, [billingMethod, quantity, t, wanIpPricing]);
+  }, [billingMethod, quantity, wanIpPricing]);
 
   const handleAdd = () => {
     const quantityNum = parseInt(quantity, 10) || 1;
     onAddItem({
       id: `wanip-${Date.now()}`,
       service: t('services.WanIp'),
-      description,
+      descriptionKey,
+      descriptionOptions: {},
       price: singlePrice,
       quantity: quantityNum,
     });

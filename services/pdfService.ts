@@ -2,6 +2,40 @@ import type { EstimateItem } from '../types';
 
 declare const jspdf: any;
 
+function getRenderedDescription(
+  item: EstimateItem, 
+  t: (key: string, options?: Record<string, string | number>) => string
+): string {
+    const options = { ...item.descriptionOptions };
+
+    switch (item.descriptionKey) {
+        case 'cloud_server.desc':
+        case 'cloud_server.desc_hours':
+            options.billing = t(`cloud_server.${options.billing}`);
+            break;
+        
+        case 'simple_storage.desc':
+            options.type = t(`simple_storage.${options.type}`);
+            options.billing = t(`simple_storage.${options.billing}`);
+            break;
+        
+        case 'block_storage.desc':
+        case 'block_storage.desc_hours':
+            options.billing = t(`block_storage.${options.billing}`);
+            break;
+
+        case 'kafka.desc':
+        case 'kafka.desc_wan':
+            options.tier = t(`kafka.${options.tier}`);
+            break;
+        
+        default:
+            break;
+    }
+
+    return t(item.descriptionKey, options);
+}
+
 export function exportEstimateToPDF(
   items: EstimateItem[], 
   subtotal: number, 
@@ -63,7 +97,7 @@ export function exportEstimateToPDF(
   items.forEach(item => {
     const itemData = [
       item.service,
-      item.description,
+      getRenderedDescription(item, t),
       item.quantity,
       item.price.toLocaleString(numberLocale),
       (item.price * item.quantity * billingCycle).toLocaleString(numberLocale),
