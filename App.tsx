@@ -17,6 +17,8 @@ import SnapshotCalculator from './components/calculators/SnapshotCalculator';
 import BackupScheduleCalculator from './components/calculators/BackupScheduleCalculator';
 import CustomImageCalculator from './components/calculators/CustomImageCalculator';
 import CdnCalculator from './components/calculators/CdnCalculator';
+import VpnCalculator from './components/calculators/VpnCalculator';
+import WafCalculator from './components/calculators/WafCalculator';
 import type { EstimateItem, Service, ServiceId } from './types';
 import { useLanguage } from './i18n/LanguageContext';
 import { usePricing } from './contexts/PricingContext';
@@ -39,9 +41,11 @@ const serviceIcons: Record<ServiceId, React.ReactNode> = {
   BackupSchedule: <img src="/public/assets/icons/icon-cloud-backup.svg" alt="Backup Schedule" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   CustomImage: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
   CDN: <img src="/public/assets/icons/CDN.svg" alt="CDN" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  Vpn: <img src="/public/assets/icons/icon-vpn.svg" alt="VPN" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  WAF: <img src="/public/assets/icons/icon-waf.svg" alt="Cloud WAF" className="h-8 w-8 mx-auto mb-2 object-contain" />,
 };
 const serviceIds: ServiceId[] = [
-    'CloudServer', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'CDN', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
+    'CloudServer', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'CDN', 'Vpn', 'WAF', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
 ];
 
 const App: React.FC = () => {
@@ -96,6 +100,8 @@ const App: React.FC = () => {
       case 'EmailTransaction': return <EmailCalculator onAddItem={handleAddItem} />;
       case 'LMS': return <LMSCalculator onAddItem={handleAddItem} />;
       case 'CDN': return <CdnCalculator onAddItem={handleAddItem} />;
+      case 'Vpn': return <VpnCalculator onAddItem={handleAddItem} />;
+      case 'WAF': return <WafCalculator onAddItem={handleAddItem} />;
       case 'WanIp': return <WanIpCalculator onAddItem={handleAddItem} />;
       case 'Snapshot': return <SnapshotCalculator onAddItem={handleAddItem} />;
       case 'BackupSchedule': return <BackupScheduleCalculator onAddItem={handleAddItem} />;

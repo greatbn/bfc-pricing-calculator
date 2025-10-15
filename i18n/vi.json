@@ -19,7 +19,9 @@
     "Snapshot": "Snapshot",
     "BackupSchedule": "Backup Schedule",
     "CustomImage": "Custom Image",
-    "CDN": "CDN"
+    "CDN": "CDN",
+    "Vpn": "VPN Site-to-Site",
+    "WAF": "Cloud WAF"
   },
   "summary": {
     "title": "Bảng dự toán chi phí",
@@ -188,6 +190,22 @@
     "price_tier_info": "Đơn giá hiện tại của bạn: {price} VNĐ/GB",
     "min_usage_note": "Lưu ý: Mức sử dụng tối thiểu là 200 GB/tháng (100.000 VNĐ/tháng).",
     "desc": "Lưu lượng Datatransfer: {transfer} GB/tháng"
+  },
+  "vpn": {
+    "title": "Công cụ tính VPN Site-to-Site",
+    "description": "Chọn một gói thuê bao dựa trên băng thông và thêm bất kỳ lưu lượng dữ liệu phát sinh.",
+    "package": "Gói băng thông",
+    "package_option": "{name} - {price} VNĐ/tháng",
+    "data_transfer": "Data Transfer phát sinh (GB)",
+    "desc": "Gói: {package}",
+    "desc_transfer": "Gói: {package}, Data Transfer phát sinh: {transfer} GB"
+  },
+  "waf": {
+    "title": "Công cụ tính Cloud WAF",
+    "description": "Ước tính chi phí cho dịch vụ Tường lửa ứng dụng web (WAF) của Bizfly Cloud, dựa trên phí thuê bao, số lượng requests và lưu lượng data transfer.",
+    "requests_per_month": "Số lượng requests mỗi tháng (triệu)",
+    "data_transfer": "Lưu lượng Datatransfer Outbound (GB/tháng)",
+    "desc": "Phí thuê bao cho 1 website/ứng dụng, với {requests} triệu requests và {transfer} GB datatransfer outbound."
   },
   "wan_ip": {
     "title": "Công cụ tính WAN IP",

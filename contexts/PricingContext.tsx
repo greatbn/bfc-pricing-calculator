@@ -17,6 +17,8 @@ export interface PricingData {
   wanIp: any;
   backupSchedule: any;
   cdn: any;
+  vpn: any;
+  waf: any;
 }
 
 interface PricingContextType {
@@ -29,7 +31,7 @@ const PricingContext = createContext<PricingContextType | undefined>(undefined);
 const pricingFiles: (keyof PricingData)[] = [
   'blockStorage', 'businessEmail', 'callCenter', 'cloudServer', 'customImage',
   'database', 'email', 'kafka', 'kubernetes', 'lms', 'loadBalancer',
-  'simpleStorage', 'snapshot', 'wanIp', 'backupSchedule', 'cdn'
+  'simpleStorage', 'snapshot', 'wanIp', 'backupSchedule', 'cdn', 'vpn', 'waf'
 ];
 
 export const PricingProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

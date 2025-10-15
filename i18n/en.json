@@ -19,7 +19,9 @@
     "Snapshot": "Snapshot",
     "BackupSchedule": "Backup Schedule",
     "CustomImage": "Custom Image",
-    "CDN": "CDN"
+    "CDN": "CDN",
+    "Vpn": "VPN Site-to-Site",
+    "WAF": "Cloud WAF"
   },
   "summary": {
     "title": "Cost Estimate",
@@ -188,6 +190,22 @@
     "price_tier_info": "Your current price tier: {price} VND/GB",
     "min_usage_note": "Note: Minimum usage is 200 GB/month (100,000 VND/month).",
     "desc": "Datatransfer Volume: {transfer} GB/month"
+  },
+  "vpn": {
+    "title": "VPN Site-to-Site Calculator",
+    "description": "Choose a subscription package based on bandwidth and add any extra data transfer.",
+    "package": "Bandwidth Package",
+    "package_option": "{name} - {price} VNĐ/month",
+    "data_transfer": "Additional Data Transfer (GB)",
+    "desc": "Package: {package}",
+    "desc_transfer": "Package: {package}, Additional Transfer: {transfer} GB"
+  },
+  "waf": {
+    "title": "Cloud WAF Calculator",
+    "description": "Estimate costs for the Bizfly Cloud Web Application Firewall (WAF) service, based on subscription, requests, and data transfer.",
+    "requests_per_month": "Requests per month (in millions)",
+    "data_transfer": "Outbound Data Transfer (GB/month)",
+    "desc": "Subscription for 1 website/app, with {requests}M requests and {transfer} GB outbound transfer."
   },
   "wan_ip": {
     "title": "WAN IP Calculator",

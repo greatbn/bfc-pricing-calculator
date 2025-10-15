@@ -24,7 +24,9 @@ export type ServiceId =
   | 'Snapshot'
   | 'BackupSchedule'
   | 'CustomImage'
-  | 'CDN';
+  | 'CDN'
+  | 'Vpn'
+  | 'WAF';
 
 export interface Service {
   id: ServiceId;
