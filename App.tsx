@@ -10,6 +10,7 @@ import EmailCalculator from './components/calculators/EmailCalculator';
 import LoadBalancerCalculator from './components/calculators/LoadBalancerCalculator';
 import KubernetesCalculator from './components/calculators/KubernetesCalculator';
 import KafkaCalculator from './components/calculators/KafkaCalculator';
+import ContainerRegistryCalculator from './components/calculators/ContainerRegistryCalculator';
 import BusinessEmailCalculator from './components/calculators/BusinessEmailCalculator';
 import BlockStorageCalculator from './components/calculators/BlockStorageCalculator';
 import LMSCalculator from './components/calculators/LMSCalculator';
@@ -33,6 +34,7 @@ const serviceIcons: Record<ServiceId, React.ReactNode> = {
   BlockStorage: <img src="/public/assets/icons/icon-block-storage.svg" alt="Block Storage" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   LoadBalancer: <img src="/public/assets/icons/icon-load-balancer.svg" alt="Load Balancer" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   Kubernetes: <img src="/public/assets/icons/icon-kubernetes-engine.svg" alt="Kubernetes" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  ContainerRegistry: <img src="/public/assets/icons/icon-container-registry.svg" alt="Container Registry" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   Kafka: <img src="/public/assets/icons/icon-kafka-cloud.svg" alt="Kafka" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   CallCenter: <img src="/public/assets/icons/icon-call-center.svg" alt="Call Center" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   BusinessEmail: <img src="/public/assets/icons/icon-business-email.svg" alt="Business Email" className="h-8 w-8 mx-auto mb-2 object-contain" />,
@@ -47,7 +49,7 @@ const serviceIcons: Record<ServiceId, React.ReactNode> = {
   WAF: <img src="/public/assets/icons/icon-waf.svg" alt="Cloud WAF" className="h-8 w-8 mx-auto mb-2 object-contain" />,
 };
 const serviceIds: ServiceId[] = [
-    'CloudServer', 'CloudVps', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'CDN', 'Vpn', 'WAF', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
+    'CloudServer', 'CloudVps', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'ContainerRegistry', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'CDN', 'Vpn', 'WAF', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
 ];
 
 const App: React.FC = () => {
@@ -97,6 +99,7 @@ const App: React.FC = () => {
       case 'BlockStorage': return <BlockStorageCalculator onAddItem={handleAddItem} />;
       case 'LoadBalancer': return <LoadBalancerCalculator onAddItem={handleAddItem} />;
       case 'Kubernetes': return <KubernetesCalculator onAddItem={handleAddItem} />;
+      case 'ContainerRegistry': return <ContainerRegistryCalculator onAddItem={handleAddItem} />;
       case 'Kafka': return <KafkaCalculator onAddItem={handleAddItem} />;
       case 'CallCenter': return <CallCenterCalculator onAddItem={handleAddItem} />;
       case 'BusinessEmail': return <BusinessEmailCalculator onAddItem={handleAddItem} />;

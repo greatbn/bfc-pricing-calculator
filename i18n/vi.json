@@ -11,6 +11,7 @@
     "BlockStorage": "Block Storage",
     "LoadBalancer": "Load Balancer",
     "Kubernetes": "Kubernetes",
+    "ContainerRegistry": "Container Registry",
     "Kafka": "Kafka",
     "CallCenter": "Call Center",
     "BusinessEmail": "Business Email",
@@ -74,6 +75,13 @@
     "package": "Gói",
     "package_option": "{cpu} vCPU, {ram} GB RAM, {ssd} GB SSD - {price} VNĐ/tháng",
     "desc": "Gói: {cpu} vCPU, {ram} GB RAM, {ssd} GB SSD"
+  },
+  "container_registry": {
+    "title": "Công cụ tính Container Registry",
+    "description": "Ước tính chi phí lưu trữ và tải image container dựa trên dung lượng lưu trữ trung bình và lưu lượng truyền tải.",
+    "storage": "Lưu trữ trung bình (GB/tháng)",
+    "data_transfer": "Lưu lượng truyền tải ra (Tải image, GB/tháng)",
+    "desc": "Lưu trữ TB: {storage} GB, Truyền tải ra: {transfer} GB"
   },
   "database": {
     "title": "Công cụ tính Cơ sở dữ liệu",

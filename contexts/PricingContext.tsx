@@ -6,6 +6,7 @@ export interface PricingData {
   callCenter: any;
   cloudServer: any;
   cloudVps: any;
+  containerRegistry: any;
   customImage: any;
   database: any;
   email: any;
@@ -30,7 +31,7 @@ interface PricingContextType {
 const PricingContext = createContext<PricingContextType | undefined>(undefined);
 
 const pricingFiles: (keyof PricingData)[] = [
-  'blockStorage', 'businessEmail', 'callCenter', 'cloudServer', 'cloudVps', 'customImage',
+  'blockStorage', 'businessEmail', 'callCenter', 'cloudServer', 'cloudVps', 'containerRegistry', 'customImage',
   'database', 'email', 'kafka', 'kubernetes', 'lms', 'loadBalancer',
   'simpleStorage', 'snapshot', 'wanIp', 'backupSchedule', 'cdn', 'vpn', 'waf'
 ];

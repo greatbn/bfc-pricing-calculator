@@ -11,6 +11,7 @@
     "BlockStorage": "Block Storage",
     "LoadBalancer": "Load Balancer",
     "Kubernetes": "Kubernetes",
+    "ContainerRegistry": "Container Registry",
     "Kafka": "Kafka",
     "CallCenter": "Call Center",
     "BusinessEmail": "Business Email",
@@ -74,6 +75,13 @@
     "package": "Package",
     "package_option": "{cpu} vCPU, {ram} GB RAM, {ssd} GB SSD - {price} VNĐ/month",
     "desc": "Package: {cpu} vCPU, {ram} GB RAM, {ssd} GB SSD"
+  },
+  "container_registry": {
+    "title": "Container Registry Calculator",
+    "description": "Estimate costs for storing and pulling container images based on average storage and data transfer volume.",
+    "storage": "Average Storage (GB/month)",
+    "data_transfer": "Data Transfer Out (Pulls, GB/month)",
+    "desc": "Avg Storage: {storage} GB, Data Transfer Out: {transfer} GB"
   },
   "database": {
     "title": "Managed Database Calculator",
