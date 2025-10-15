@@ -5,6 +5,7 @@
   "services": {
     "select_service": "Select a Service to Estimate",
     "CloudServer": "Cloud Server",
+    "CloudVps": "Cloud VPS",
     "Database": "Database",
     "SimpleStorage": "Simple Storage",
     "BlockStorage": "Block Storage",
@@ -66,6 +67,13 @@
     "disk_size": "Disk Size (GB)",
     "desc": "Chip: {chip}, Tier: {tier}, Billing: {billing}, {cpu} vCPU, {ram} GB RAM, {diskSize} GB {diskType} Disk",
     "desc_hours": "Chip: {chip}, Tier: {tier}, Billing: {billing} ({hours} hours), {cpu} vCPU, {ram} GB RAM, {diskSize} GB {diskType} Disk"
+  },
+  "cloud_vps": {
+    "title": "Cloud VPS Calculator",
+    "description": "Choose a pre-configured Cloud VPS package based on your needs.",
+    "package": "Package",
+    "package_option": "{cpu} vCPU, {ram} GB RAM, {ssd} GB SSD - {price} VNĐ/month",
+    "desc": "Package: {cpu} vCPU, {ram} GB RAM, {ssd} GB SSD"
   },
   "database": {
     "title": "Managed Database Calculator",

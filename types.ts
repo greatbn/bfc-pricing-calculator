@@ -10,7 +10,8 @@ export interface EstimateItem {
 }
 
 export type ServiceId = 
-  | 'CloudServer' 
+  | 'CloudServer'
+  | 'CloudVps'
   | 'Database' 
   | 'SimpleStorage' 
   | 'BlockStorage'

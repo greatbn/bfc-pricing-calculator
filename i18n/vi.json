@@ -5,6 +5,7 @@
   "services": {
     "select_service": "Chọn dịch vụ để ước tính",
     "CloudServer": "Cloud Server",
+    "CloudVps": "Cloud VPS",
     "Database": "Database",
     "SimpleStorage": "Simple Storage",
     "BlockStorage": "Block Storage",
@@ -66,6 +67,13 @@
     "disk_size": "Dung lượng ổ đĩa (GB)",
     "desc": "Chip: {chip}, Loại: {tier}, Thanh toán: {billing}, {cpu} vCPU, {ram} GB RAM, {diskSize} GB ổ {diskType}",
     "desc_hours": "Chip: {chip}, Loại: {tier}, Thanh toán: {billing} ({hours} giờ), {cpu} vCPU, {ram} GB RAM, {diskSize} GB ổ {diskType}"
+  },
+  "cloud_vps": {
+    "title": "Công cụ tính Cloud VPS",
+    "description": "Chọn một gói Cloud VPS được cấu hình sẵn dựa trên nhu cầu của bạn.",
+    "package": "Gói",
+    "package_option": "{cpu} vCPU, {ram} GB RAM, {ssd} GB SSD - {price} VNĐ/tháng",
+    "desc": "Gói: {cpu} vCPU, {ram} GB RAM, {ssd} GB SSD"
   },
   "database": {
     "title": "Công cụ tính Cơ sở dữ liệu",

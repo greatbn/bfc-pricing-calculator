@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import Header from './components/Header';
 import CostSummary from './components/CostSummary';
 import CloudServerCalculator from './components/calculators/CloudServerCalculator';
+import CloudVpsCalculator from './components/calculators/CloudVpsCalculator';
 import DatabaseCalculator from './components/calculators/DatabaseCalculator';
 import SimpleStorageCalculator from './components/calculators/SimpleStorageCalculator';
 import CallCenterCalculator from './components/calculators/CallCenterCalculator';
@@ -26,6 +27,7 @@ import { usePricing } from './contexts/PricingContext';
 // Icons for the service selector
 const serviceIcons: Record<ServiceId, React.ReactNode> = {
   CloudServer: <img src="/public/assets/icons/cloudserver.svg" alt="Cloud Server" className="h-8 w-8 mx-auto mb-2 object-contain" />,
+  CloudVps: <img src="/public/assets/icons/cloudvps.svg" alt="Cloud VPS" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   Database: <img src="/public/assets/icons/icon-database.svg" alt="Database" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   SimpleStorage: <img src="/public/assets/icons/icon-simple-storage.svg" alt="Simple Storage" className="h-8 w-8 mx-auto mb-2 object-contain" />,
   BlockStorage: <img src="/public/assets/icons/icon-block-storage.svg" alt="Block Storage" className="h-8 w-8 mx-auto mb-2 object-contain" />,
@@ -45,7 +47,7 @@ const serviceIcons: Record<ServiceId, React.ReactNode> = {
   WAF: <img src="/public/assets/icons/icon-waf.svg" alt="Cloud WAF" className="h-8 w-8 mx-auto mb-2 object-contain" />,
 };
 const serviceIds: ServiceId[] = [
-    'CloudServer', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'CDN', 'Vpn', 'WAF', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
+    'CloudServer', 'CloudVps', 'Database', 'SimpleStorage', 'BlockStorage', 'LoadBalancer', 'Kubernetes', 'Kafka', 'CallCenter', 'BusinessEmail', 'EmailTransaction', 'LMS', 'CDN', 'Vpn', 'WAF', 'WanIp', 'Snapshot', 'BackupSchedule', 'CustomImage'
 ];
 
 const App: React.FC = () => {
@@ -89,6 +91,7 @@ const App: React.FC = () => {
     if (!pricing) return null;
     switch (activeService) {
       case 'CloudServer': return <CloudServerCalculator onAddItem={handleAddItem} />;
+      case 'CloudVps': return <CloudVpsCalculator onAddItem={handleAddItem} />;
       case 'Database': return <DatabaseCalculator onAddItem={handleAddItem} />;
       case 'SimpleStorage': return <SimpleStorageCalculator onAddItem={handleAddItem} />;
       case 'BlockStorage': return <BlockStorageCalculator onAddItem={handleAddItem} />;
