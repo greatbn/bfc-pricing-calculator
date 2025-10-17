@@ -91,8 +91,8 @@ const CdnCalculator: React.FC<CdnCalculatorProps> = ({ onAddItem }) => {
                 id="cdn-transfer" 
                 value={dataTransfer} 
                 onChange={e => setDataTransfer(e.target.value)} 
-                onBlur={() => handleBlur(setDataTransfer, dataTransfer, 0)}
-                min="0" 
+                onBlur={() => handleBlur(setDataTransfer, dataTransfer, cdnPricing.minGB)}
+                min={cdnPricing.minGB}
                 step="100" 
                 className="mt-1 block w-full bg-white pl-3 pr-2 py-2 text-base text-gray-900 border-black rounded-md" 
               />
