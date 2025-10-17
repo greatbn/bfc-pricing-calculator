@@ -14,17 +14,23 @@ type TierAmd = 'premium' | 'enterprise' | 'dedicated';
 type TierIntel = 'basic' | 'premium' | 'enterprise' | 'dedicated';
 type DiskType = 'hdd' | 'ssd' | 'nvme';
 
+interface ExternalDisk {
+  id: number;
+  quantity: string;
+  diskType: DiskType;
+  diskSize: string;
+}
+
 const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem }) => {
   const { language, t } = useLanguage();
   const { pricing } = usePricing();
-  const cloudServerPricing = pricing!.cloudServer;
+  const { cloudServer: cloudServerPricing, blockStorage: blockStoragePricing } = pricing!;
   const numberLocale = language === 'vi' ? 'vi-VN' : 'en-US';
 
   const [chipModel, setChipModel] = useState<ChipModel>('intelGen2');
   const [billingMethod, setBillingMethod] = useState<BillingMethod>('subscription');
   const [tier, setTier] = useState<TierAmd | TierIntel>('basic');
   
-  // Unified states for both chip models
   const [cpuCores, setCpuCores] = useState(4);
   const [ramGb, setRamGb] = useState(8);
   
@@ -32,6 +38,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
   const [diskSize, setDiskSize] = useState('10');
   const [hours, setHours] = useState('720');
   const [quantity, setQuantity] = useState('1');
+  const [externalDisks, setExternalDisks] = useState<ExternalDisk[]>([]);
 
   const tiersForModel = chipModel === 'amdGen4' ? cloudServerPricing.amdGen4.tiers : cloudServerPricing.intelGen2.tiers;
 
@@ -39,9 +46,15 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
     return (cloudServerPricing[chipModel] as any)[billingMethod][tier];
   }, [chipModel, billingMethod, tier, cloudServerPricing]);
 
-  const availableDiskTypes = useMemo(() => {
+  const availableRootDiskTypes = useMemo(() => {
     return currentPricingTier?.disk ? Object.keys(currentPricingTier.disk) as DiskType[] : [];
   }, [currentPricingTier]);
+
+  const availableExternalDiskTypes = useMemo(() => {
+    const tierPricing = blockStoragePricing?.[billingMethod]?.[tier as any];
+    if (!tierPricing) return [];
+    return Object.keys(tierPricing) as DiskType[];
+  }, [billingMethod, tier, blockStoragePricing]);
   
   // Effects to reset selections on change
   useEffect(() => {
@@ -49,7 +62,8 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
     if (!newTiers.includes(tier as any)) {
       setTier(chipModel === 'amdGen4' ? 'premium' : 'basic');
     }
-  }, [chipModel, tier, cloudServerPricing]);
+    setExternalDisks([]); // Clear external disks on tier/model change
+  }, [chipModel, tier, cloudServerPricing, billingMethod]);
 
   useEffect(() => {
     if (currentPricingTier?.cpu?.length > 0) {
@@ -67,13 +81,13 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
   }, [currentPricingTier, cpuCores, ramGb]);
   
   useEffect(() => {
-    if (!availableDiskTypes.includes(diskType)) {
-        if (availableDiskTypes.length > 0) {
-            const newDiskType = availableDiskTypes.includes('ssd') ? 'ssd' : availableDiskTypes[0];
+    if (!availableRootDiskTypes.includes(diskType)) {
+        if (availableRootDiskTypes.length > 0) {
+            const newDiskType = availableRootDiskTypes.includes('ssd') ? 'ssd' : availableRootDiskTypes[0];
             setDiskType(newDiskType as DiskType);
         }
     }
-  }, [availableDiskTypes, diskType]);
+  }, [availableRootDiskTypes, diskType]);
 
   const { total, singlePrice, descriptionKey, descriptionOptions } = useMemo(() => {
     let singleItemTotal = 0;
@@ -100,14 +114,14 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
       singleItemTotal += ramPrice * effectiveHours;
     }
 
-    // --- Disk Calculation ---
-    const diskPricing = currentPricingTier.disk?.[diskType];
-    if (diskPricing) {
+    // --- Root Disk Calculation ---
+    const rootDiskPricing = currentPricingTier.disk?.[diskType];
+    if (rootDiskPricing) {
         let diskCost = 0;
         if (diskSizeNum <= 100) {
-            diskCost = diskPricing.under100GB * diskSizeNum;
+            diskCost = rootDiskPricing.under100GB * diskSizeNum;
         } else {
-            diskCost = (diskPricing.under100GB * 100) + (diskPricing.over100GB * (diskSizeNum - 100));
+            diskCost = (rootDiskPricing.under100GB * 100) + (rootDiskPricing.over100GB * (diskSizeNum - 100));
         }
 
         if (billingMethod === 'onDemand') {
@@ -116,8 +130,45 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
         singleItemTotal += diskCost;
     }
 
+    // --- External Disks Calculation ---
+    let externalDisksCost = 0;
+    let externalDisksDescription = "";
+    const externalTierPricing = blockStoragePricing[billingMethod][tier as keyof typeof blockStoragePricing[BillingMethod]];
+
+    for (const disk of externalDisks) {
+      const extDiskSizeNum = parseInt(disk.diskSize, 10) || 10;
+      const extDiskQuantityNum = parseInt(disk.quantity, 10) || 1;
+      
+      const diskPricing = externalTierPricing?.[disk.diskType as keyof typeof externalTierPricing];
+
+      if (diskPricing) {
+          let singleDiskCost = 0;
+          if (billingMethod === 'subscription') {
+              if (extDiskSizeNum <= 100) {
+                  singleDiskCost = diskPricing.under100GB * extDiskSizeNum;
+              } else {
+                  singleDiskCost = (diskPricing.under100GB * 100) + (diskPricing.over100GB * (extDiskSizeNum - 100));
+              }
+          } else { // On-Demand
+              const effectiveHours = Math.min(hoursNum, 720);
+              let hourlyCostPerDisk = 0;
+              if (extDiskSizeNum <= 100) {
+                  hourlyCostPerDisk = diskPricing.under100GB * extDiskSizeNum;
+              } else {
+                  hourlyCostPerDisk = (diskPricing.under100GB * 100) + (diskPricing.over100GB * (extDiskSizeNum - 100));
+              }
+              singleDiskCost = hourlyCostPerDisk * effectiveHours;
+          }
+          externalDisksCost += singleDiskCost * extDiskQuantityNum;
+          
+          if (externalDisksDescription) externalDisksDescription += ", ";
+          externalDisksDescription += `${extDiskQuantityNum}x ${extDiskSizeNum}GB ${disk.diskType.toUpperCase()}`;
+      }
+    }
+    singleItemTotal += externalDisksCost;
+    
     const descKey = billingMethod === 'subscription' ? 'cloud_server.desc' : 'cloud_server.desc_hours';
-    const descOptions = {
+    const descOptions: Record<string, string | number> = {
         chip: chipModel === 'amdGen4' ? 'AMD Gen 4' : 'Intel Gen 2',
         tier,
         billing: billingMethod,
@@ -126,6 +177,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
         diskSize: diskSizeNum,
         diskType: diskType.toUpperCase(),
         hours: hoursNum,
+        externalDisks: externalDisksDescription ? `+ ${externalDisksDescription}` : ""
     };
     
     const finalSinglePrice = Math.round(singleItemTotal);
@@ -137,7 +189,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
       descriptionOptions: descOptions
     };
 
-  }, [chipModel, billingMethod, tier, cpuCores, ramGb, diskType, diskSize, hours, quantity, t, currentPricingTier]);
+  }, [chipModel, billingMethod, tier, cpuCores, ramGb, diskType, diskSize, hours, quantity, externalDisks, t, cloudServerPricing, blockStoragePricing]);
 
   const handleAdd = () => {
     if (total > 0) {
@@ -160,11 +212,35 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
     }
   };
 
+  const addExternalDisk = () => {
+    const newDisk: ExternalDisk = {
+      id: Date.now(),
+      quantity: '1',
+      diskType: availableExternalDiskTypes.includes('ssd') ? 'ssd' : (availableExternalDiskTypes[0] || 'hdd'),
+      diskSize: '100',
+    };
+    setExternalDisks(prev => [...prev, newDisk]);
+  };
+
+  const removeExternalDisk = (id: number) => {
+    setExternalDisks(prev => prev.filter(disk => disk.id !== id));
+  };
+
+  const handleExternalDiskChange = (id: number, field: keyof Omit<ExternalDisk, 'id'>, value: string) => {
+    setExternalDisks(prev => prev.map(disk => disk.id === id ? { ...disk, [field]: value } : disk));
+    
+    const numValue = parseInt(value, 10);
+    const min = field === 'quantity' ? 1 : 10;
+    if (isNaN(numValue) || numValue < min) {
+       setExternalDisks(prev => prev.map(disk => disk.id === id ? { ...disk, [field]: String(min) } : disk));
+    }
+  };
+
   const summaryContent = (
     <div className="p-4 bg-blue-50 rounded-lg text-right sm:text-left">
       <span className="text-gray-600">{t('calculator.estimated_cost')}: </span>
       <span className="text-xl font-bold text-blue-700">{total.toLocaleString(numberLocale)} VNĐ</span>
-      <span className="text-sm text-gray-500">
+      <span className="text-sm text-gray-500 ml-1">
         {billingMethod === 'subscription' ? t('calculator.per_month') : t('calculator.per_hours', { hours })}
       </span>
     </div>
@@ -178,6 +254,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
       summaryContent={summaryContent}
     >
       <div className="space-y-6">
+        <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">{t('cloud_server.base_config')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
            <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('cloud_server.chip_model')}</label>
@@ -202,9 +279,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
             </div>
         )}
 
-        <hr/>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div>
             <label htmlFor="tier" className="block text-sm font-medium text-gray-700">{t('cloud_server.tier')}</label>
             <select id="tier" value={tier} onChange={e => setTier(e.target.value as TierAmd | TierIntel)} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md capitalize">
@@ -224,11 +299,13 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
               {currentPricingTier?.ram?.map((r: {gb: number}) => <option key={r.gb} value={r.gb}>{r.gb} GB</option>)}
             </select>
           </div>
+        </div>
 
-          <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+           <div>
              <label htmlFor="disk-type" className="block text-sm font-medium text-gray-700">{t('cloud_server.disk_type')}</label>
              <select id="disk-type" value={diskType} onChange={e => setDiskType(e.target.value as DiskType)} className="mt-1 block w-full bg-white pl-3 pr-10 py-2 text-base text-gray-900 border-black focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                {availableDiskTypes.map(dt => <option key={dt} value={dt}>{dt.toUpperCase()}</option>)}
+                {availableRootDiskTypes.map(dt => <option key={dt} value={dt}>{dt.toUpperCase()}</option>)}
              </select>
           </div>
            <div>
@@ -237,6 +314,40 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
           </div>
         </div>
 
+        <div className="pt-4">
+            <h3 className="text-lg font-semibold text-gray-700 border-b pb-2">{t('cloud_server.external_disks_title')}</h3>
+            <div className="space-y-4 mt-4">
+                {externalDisks.map((disk, index) => (
+                    <div key={disk.id} className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end p-4 bg-gray-50 rounded-md animate-fade-in">
+                        <div className="sm:col-span-4 text-sm font-medium text-gray-600">Disk #{index + 1}</div>
+                        <div>
+                            <label htmlFor={`ext-disk-qty-${disk.id}`} className="block text-xs font-medium text-gray-700">{t('cloud_server.disk_quantity')}</label>
+                            <input type="number" id={`ext-disk-qty-${disk.id}`} value={disk.quantity} onChange={e => handleExternalDiskChange(disk.id, 'quantity', e.target.value)} min="1" className="mt-1 block w-full bg-white pl-3 pr-2 py-2 text-sm text-gray-900 border-black rounded-md"/>
+                        </div>
+                        <div>
+                            <label htmlFor={`ext-disk-type-${disk.id}`} className="block text-xs font-medium text-gray-700">{t('cloud_server.disk_type')}</label>
+                            <select id={`ext-disk-type-${disk.id}`} value={disk.diskType} onChange={e => handleExternalDiskChange(disk.id, 'diskType', e.target.value)} className="mt-1 block w-full bg-white pl-3 pr-8 py-2 text-sm text-gray-900 border-black rounded-md">
+                               {availableExternalDiskTypes.map(dt => <option key={dt} value={dt}>{dt.toUpperCase()}</option>)}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor={`ext-disk-size-${disk.id}`} className="block text-xs font-medium text-gray-700">{t('block_storage.disk_size')}</label>
+                            <input type="number" id={`ext-disk-size-${disk.id}`} value={disk.diskSize} onChange={e => handleExternalDiskChange(disk.id, 'diskSize', e.target.value)} min="10" step="10" className="mt-1 block w-full bg-white pl-3 pr-2 py-2 text-sm text-gray-900 border-black rounded-md"/>
+                        </div>
+                        <div>
+                            <button onClick={() => removeExternalDisk(disk.id)} title={t('cloud_server.remove_disk') as string} className="w-full bg-red-500 text-white font-bold py-2 px-2 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                ))}
+                <button onClick={addExternalDisk} className="w-full sm:w-auto bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                    {t('cloud_server.add_disk')}
+                </button>
+            </div>
+        </div>
+        
         <hr/>
         
         <div>
