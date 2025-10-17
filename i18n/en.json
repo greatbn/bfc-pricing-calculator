@@ -242,9 +242,11 @@
   },
   "snapshot": {
     "title": "Snapshot Calculator",
-    "description": "Estimate the monthly cost for storing server volume snapshots based on their total size.",
-    "size": "Total Snapshot Size (GB)",
-    "desc": "Volume Snapshot Storage: {size} GB"
+    "description": "Estimate the monthly cost for snapshots, calculated as 20% of the corresponding Block Storage subscription price.",
+    "tier": "Tier",
+    "volume_type": "Volume Type",
+    "volume_size": "Volume Size (GB)",
+    "desc": "Snapshot for {size} GB {type} Volume ({tier} Tier)"
   },
   "backup_schedule": {
     "title": "Backup Schedule Calculator",

@@ -27,6 +27,10 @@ function getRenderedDescription(
             options.tier = t(`block_storage.${options.tier}`);
             break;
 
+        case 'snapshot.desc':
+            options.tier = t(`block_storage.${options.tier}`);
+            break;
+
         case 'kafka.desc':
         case 'kafka.desc_wan':
             options.tier = t(`kafka.${options.tier}`);

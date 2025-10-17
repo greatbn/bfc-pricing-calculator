@@ -242,9 +242,11 @@
   },
   "snapshot": {
     "title": "Công cụ tính Snapshot",
-    "description": "Ước tính chi phí hàng tháng để lưu trữ các snapshot ổ đĩa máy chủ dựa trên tổng dung lượng của chúng.",
-    "size": "Tổng dung lượng Snapshot (GB)",
-    "desc": "Lưu trữ Snapshot ổ đĩa: {size} GB"
+    "description": "Ước tính chi phí hàng tháng cho snapshot, được tính bằng 20% giá thuê bao Block Storage tương ứng.",
+    "tier": "Loại",
+    "volume_type": "Loại ổ đĩa",
+    "volume_size": "Dung lượng ổ đĩa (GB)",
+    "desc": "Snapshot cho ổ đĩa {size} GB {type} (Loại {tier})"
   },
   "backup_schedule": {
     "title": "Công cụ tính Lịch Sao lưu",
