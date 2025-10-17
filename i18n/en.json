@@ -119,10 +119,15 @@
     "subscription": "Subscription",
     "on_demand": "On-Demand",
     "hours": "Number of Hours",
+    "tier": "Tier",
+    "basic": "Basic",
+    "premium": "Premium",
+    "enterprise": "Enterprise",
+    "dedicated": "Dedicated",
     "disk_type": "Disk Type",
     "disk_size": "Disk Size (GB)",
-    "desc": "Billing: {billing}, {diskSize} GB {diskType} Volume",
-    "desc_hours": "Billing: {billing} ({hours} hours), {diskSize} GB {diskType} Volume"
+    "desc": "Tier: {tier}, Billing: {billing}, {diskSize} GB {diskType} Volume",
+    "desc_hours": "Tier: {tier}, Billing: {billing} ({hours} hours), {diskSize} GB {diskType} Volume"
   },
   "load_balancer": {
     "title": "Load Balancer Calculator",
@@ -246,7 +251,7 @@
   },
   "custom_image": {
     "title": "Custom Image Calculator",
-    "description": "Calculate the monthly cost for storing custom server images based on their total size.",
+    "description": "Estimate the monthly subscription cost for storing your custom server images. The price is based on the total size of your images and is consistent across all server tiers (e.g., Premium, Enterprise).",
     "size": "Total Image Size (GB)",
     "desc": "Custom Image Storage: {size} GB"
   },

@@ -24,6 +24,7 @@ function getRenderedDescription(
         case 'block_storage.desc':
         case 'block_storage.desc_hours':
             options.billing = t(`block_storage.${options.billing}`);
+            options.tier = t(`block_storage.${options.tier}`);
             break;
 
         case 'kafka.desc':

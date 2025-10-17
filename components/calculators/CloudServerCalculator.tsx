@@ -30,7 +30,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
   
   const [diskType, setDiskType] = useState<DiskType>('ssd');
   const [diskSize, setDiskSize] = useState('10');
-  const [hours, setHours] = useState('730');
+  const [hours, setHours] = useState('720');
   const [quantity, setQuantity] = useState('1');
 
   const tiersForModel = chipModel === 'amdGen4' ? cloudServerPricing.amdGen4.tiers : cloudServerPricing.intelGen2.tiers;
@@ -93,7 +93,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
       singleItemTotal += cpuPrice;
       singleItemTotal += ramPrice;
     } else { // On-Demand
-      const effectiveHours = Math.min(hoursNum, 730);
+      const effectiveHours = Math.min(hoursNum, 720);
       const cpuPrice = currentPricingTier.cpu?.find((c: any) => c.cores === cpuCores)?.on || 0;
       const ramPrice = currentPricingTier.ram?.find((r: any) => r.gb === ramGb)?.on || 0;
       singleItemTotal += cpuPrice * effectiveHours;
@@ -111,7 +111,7 @@ const CloudServerCalculator: React.FC<CloudServerCalculatorProps> = ({ onAddItem
         }
 
         if (billingMethod === 'onDemand') {
-            diskCost *= Math.min(hoursNum, 730);
+            diskCost *= Math.min(hoursNum, 720);
         }
         singleItemTotal += diskCost;
     }

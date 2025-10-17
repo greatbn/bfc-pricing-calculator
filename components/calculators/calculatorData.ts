@@ -102,11 +102,11 @@ export const backupSchedulePricing = {
 };
 
 export const customImagePricing = {
-  pricePerGB: 1000,
+  pricePerGB: 1500,
 };
 
 export const databasePricing = {
-  hoursPerMonth: 730,
+  hoursPerMonth: 720,
   cpu: {
     premium: [{ cores: 2, price: 340 }, { cores: 4, price: 680 }, { cores: 8, price: 1360 }],
     enterprise: [{ cores: 4, price: 1020 }, { cores: 8, price: 2040 }, { cores: 16, price: 4080 }],

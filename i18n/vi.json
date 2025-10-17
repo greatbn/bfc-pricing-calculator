@@ -119,10 +119,15 @@
     "subscription": "Theo tháng",
     "on_demand": "Theo giờ",
     "hours": "Số giờ",
+    "tier": "Loại",
+    "basic": "Basic",
+    "premium": "Premium",
+    "enterprise": "Enterprise",
+    "dedicated": "Dedicated",
     "disk_type": "Loại ổ đĩa",
     "disk_size": "Dung lượng ổ đĩa (GB)",
-    "desc": "Thanh toán: {billing}, {diskSize} GB ổ {diskType}",
-    "desc_hours": "Thanh toán: {billing} ({hours} giờ), {diskSize} GB ổ {diskType}"
+    "desc": "Loại: {tier}, Thanh toán: {billing}, {diskSize} GB ổ {diskType}",
+    "desc_hours": "Loại: {tier}, Thanh toán: {billing} ({hours} giờ), {diskSize} GB ổ {diskType}"
   },
   "load_balancer": {
     "title": "Công cụ tính Cân bằng tải",
@@ -246,7 +251,7 @@
   },
   "custom_image": {
     "title": "Công cụ tính Ảnh tùy chỉnh",
-    "description": "Tính toán chi phí hàng tháng để lưu trữ các ảnh máy chủ tùy chỉnh dựa trên tổng dung lượng của chúng.",
+    "description": "Ước tính chi phí thuê bao hàng tháng để lưu trữ các ảnh máy chủ tùy chỉnh của bạn. Giá được tính dựa trên tổng dung lượng của ảnh và được áp dụng đồng nhất cho tất cả các loại máy chủ (ví dụ: Premium, Enterprise).",
     "size": "Tổng dung lượng Ảnh (GB)",
     "desc": "Lưu trữ Ảnh tùy chỉnh: {size} GB"
   },

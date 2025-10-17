@@ -44,7 +44,7 @@ const SimpleStorageCalculator: React.FC<SimpleStorageCalculatorProps> = ({ onAdd
       }
     } else { // PAYG
       const paygPrice = simpleStoragePricing.payAsYouGo[storageType].pricePerGBHour;
-      storageCost = paygPrice * storageAmountNum * 730; // 730 hours/month
+      storageCost = paygPrice * storageAmountNum * 720; // 720 hours/month
       storageDisplayAmount = storageAmountNum;
     }
 
